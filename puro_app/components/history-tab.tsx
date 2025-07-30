@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calendar, DollarSign, TrendingUp, FileText } from "lucide-react"
+import { Calendar, DollarSign, TrendingUp, FileText, Building2 } from "lucide-react"
 import type { Payment } from "@/app/dashboard/page"
 
 interface HistoryTabProps {
@@ -22,7 +22,8 @@ export function HistoryTab({ payments }: HistoryTabProps) {
     const matchesSearch =
       payment.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       payment.idFactura.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+      payment.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.sucursalNombre.toLowerCase().includes(searchTerm.toLowerCase())
 
     let matchesDate = true
     if (dateFilter !== "all") {
@@ -82,7 +83,7 @@ export function HistoryTab({ payments }: HistoryTabProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold">Historial de Pagos</h2>
-        <p className="text-gray-600">Revisa el historial completo de facturas y pagos</p>
+        <p className="text-gray-600">Revisa el historial completo de facturas y pagos por sucursal</p>
       </div>
 
       {/* Estadísticas resumidas */}
@@ -161,7 +162,7 @@ export function HistoryTab({ payments }: HistoryTabProps) {
       <Card>
         <CardHeader>
           <CardTitle>Historial Completo</CardTitle>
-          <CardDescription>Registro cronológico de todas las facturas y pagos</CardDescription>
+          <CardDescription>Registro cronológico de todas las facturas y pagos por sucursal</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -169,8 +170,9 @@ export function HistoryTab({ payments }: HistoryTabProps) {
               <TableRow>
                 <TableHead>Fecha Registro</TableHead>
                 <TableHead>Proveedor</TableHead>
-                <TableHead>ID Factura</TableHead>
+                <TableHead>Sucursal</TableHead>
                 <TableHead>Tipo</TableHead>
+                <TableHead>Fecha Recepción</TableHead>
                 <TableHead>Monto Total</TableHead>
                 <TableHead>Pagado</TableHead>
                 <TableHead>Saldo</TableHead>
@@ -183,12 +185,18 @@ export function HistoryTab({ payments }: HistoryTabProps) {
                 <TableRow key={payment._id}>
                   <TableCell>{new Date(payment.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell className="font-medium">{payment.supplierName}</TableCell>
-                  <TableCell>{payment.idFactura}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-purple-500" />
+                      {payment.sucursalNombre}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={payment.tipoDocumento === "Remito" ? "outline" : "secondary"}>
                       {payment.tipoDocumento}
                     </Badge>
                   </TableCell>
+                  <TableCell>{new Date(payment.fechaRecepcion).toLocaleDateString()}</TableCell>
                   <TableCell>${payment.montoTotal.toLocaleString()}</TableCell>
                   <TableCell>${payment.montoPagado.toLocaleString()}</TableCell>
                   <TableCell className={payment.saldoPendiente > 0 ? "text-red-600" : "text-green-600"}>

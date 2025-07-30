@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
-import Payment from "@/lib/Payment"
+import Payment from "@/lib/models/Payment"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {

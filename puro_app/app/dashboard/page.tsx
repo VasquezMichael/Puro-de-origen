@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Users, DollarSign, TrendingUp, AlertTriangle, LogOut, RefreshCw } from "lucide-react"
+import { Users, DollarSign, AlertTriangle, LogOut, RefreshCw, Building2 } from "lucide-react"
 import { SuppliersTab } from "@/components/suppliers-tab"
 import { PaymentsTab } from "@/components/payments-tab"
 import { HistoryTab } from "@/components/history-tab"
 import { UsersTab } from "@/components/users-tab"
+import { SucursalesTab } from "@/components/sucursales-tab"
 import { useRouter } from "next/navigation"
 
 export interface Supplier {
@@ -24,11 +25,21 @@ export interface Supplier {
   createdAt: string
 }
 
+export interface Sucursal {
+  _id: string
+  nombre: string
+  direccion?: string
+  activa: boolean
+  createdAt: string
+}
+
 export interface Payment {
   _id: string
   idFactura: string
   supplierId: string
   supplierName: string
+  sucursalId: string
+  sucursalNombre: string
   fechaRemito: string
   fechaRecepcion: string
   tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito"
@@ -47,6 +58,7 @@ export interface Payment {
 
 export default function Dashboard() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
+  const [sucursales, setSucursales] = useState<Sucursal[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
   const [activeTab, setActiveTab] = useState("dashboard")
   const [isLoading, setIsLoading] = useState(true)
@@ -66,8 +78,15 @@ export default function Dashboard() {
 
       console.log("🔄 Fetching data from API...")
 
-      const [suppliersRes, paymentsRes] = await Promise.all([
+      const [suppliersRes, sucursalesRes, paymentsRes] = await Promise.all([
         fetch("/api/suppliers", {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }),
+        fetch("/api/sucursales", {
           method: "GET",
           headers: {
             "Cache-Control": "no-cache",
@@ -85,21 +104,30 @@ export default function Dashboard() {
 
       console.log("📥 API Response status:", {
         suppliers: suppliersRes.status,
+        sucursales: sucursalesRes.status,
         payments: paymentsRes.status,
       })
 
-      if (!suppliersRes.ok || !paymentsRes.ok) {
-        throw new Error(`API Error: Suppliers ${suppliersRes.status}, Payments ${paymentsRes.status}`)
+      if (!suppliersRes.ok || !sucursalesRes.ok || !paymentsRes.ok) {
+        throw new Error(
+          `API Error: Suppliers ${suppliersRes.status}, Sucursales ${sucursalesRes.status}, Payments ${paymentsRes.status}`,
+        )
       }
 
-      const [suppliersData, paymentsData] = await Promise.all([suppliersRes.json(), paymentsRes.json()])
+      const [suppliersData, sucursalesData, paymentsData] = await Promise.all([
+        suppliersRes.json(),
+        sucursalesRes.json(),
+        paymentsRes.json(),
+      ])
 
       console.log("✅ Data fetched successfully:", {
         suppliers: suppliersData.length,
+        sucursales: sucursalesData.length,
         payments: paymentsData.length,
       })
 
       setSuppliers(suppliersData)
+      setSucursales(sucursalesData)
       setPayments(paymentsData)
     } catch (error) {
       console.error("💥 Error fetching data:", error)
@@ -136,6 +164,11 @@ export default function Dashboard() {
     setSuppliers(newSuppliers)
   }
 
+  const updateSucursales = (newSucursales: Sucursal[]) => {
+    console.log("🔄 Updating sucursales in real-time:", newSucursales.length)
+    setSucursales(newSucursales)
+  }
+
   const updatePayments = (newPayments: Payment[]) => {
     console.log("🔄 Updating payments in real-time:", newPayments.length)
     setPayments(newPayments)
@@ -143,6 +176,7 @@ export default function Dashboard() {
 
   // Calcular métricas
   const activeSuppliers = suppliers.filter((s) => s.estado === "Activo").length
+  const activeSucursales = sucursales.filter((s) => s.activa).length
   const pendingPayments = payments.filter((p) => p.estado === "Pendiente")
   const paidPayments = payments.filter((p) => p.estado === "Pagado")
   const partialPayments = payments.filter((p) => p.estado === "Parcialmente Pagado")
@@ -199,6 +233,9 @@ export default function Dashboard() {
                 <Badge variant="outline" className="text-green-600 border-green-200">
                   {suppliers.length} Proveedores
                 </Badge>
+                <Badge variant="outline" className="text-purple-600 border-purple-200">
+                  {sucursales.length} Sucursales
+                </Badge>
                 <Badge variant="outline" className="text-blue-600 border-blue-200">
                   {payments.length} Facturas
                 </Badge>
@@ -227,10 +264,11 @@ export default function Dashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="suppliers">Proveedores</TabsTrigger>
             <TabsTrigger value="payments">Pagos</TabsTrigger>
+            <TabsTrigger value="suppliers">Proveedores</TabsTrigger>
+            <TabsTrigger value="sucursales">Sucursales</TabsTrigger>
             <TabsTrigger value="history">Historial</TabsTrigger>
-            <TabsTrigger value="users">Usuarios</TabsTrigger>
+           {/* <TabsTrigger value="users">Usuarios</TabsTrigger>*/}
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
@@ -249,6 +287,17 @@ export default function Dashboard() {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Sucursales Activas</CardTitle>
+                  <Building2 className="h-4 w-4 text-purple-500" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{activeSucursales}</div>
+                  <p className="text-xs text-muted-foreground">Sucursales operativas</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Saldo Pendiente</CardTitle>
                   <DollarSign className="h-4 w-4 text-orange-500" />
                 </CardHeader>
@@ -257,17 +306,6 @@ export default function Dashboard() {
                   <p className="text-xs text-muted-foreground">
                     {pendingPayments.length + partialPayments.length} facturas con saldo
                   </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pagos Realizados</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-green-600">${totalPaid.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">Total pagado a proveedores</p>
                 </CardContent>
               </Card>
 
@@ -299,9 +337,9 @@ export default function Dashboard() {
                       <div key={payment._id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div>
                           <p className="font-medium">{payment.supplierName}</p>
-                          <p className="text-sm text-gray-600">{payment.idFactura}</p>
+                          <p className="text-sm text-gray-600">{payment.sucursalNombre}</p>
                           <p className="text-xs text-gray-500">
-                            {payment.tipoDocumento} - {new Date(payment.fechaRemito).toLocaleDateString()}
+                            {payment.tipoDocumento} - {new Date(payment.fechaRecepcion).toLocaleDateString()}
                           </p>
                         </div>
                         <div className="text-right">
@@ -336,7 +374,7 @@ export default function Dashboard() {
                       >
                         <div>
                           <p className="font-medium">{payment.supplierName}</p>
-                          <p className="text-sm text-gray-600">{payment.idFactura}</p>
+                          <p className="text-sm text-gray-600">{payment.sucursalNombre}</p>
                           <p className="text-xs text-red-600">Remito presentado - Debe entregar Factura A</p>
                         </div>
                         <div className="text-right">
@@ -358,11 +396,16 @@ export default function Dashboard() {
             <SuppliersTab suppliers={suppliers} setSuppliers={updateSuppliers} onDataChange={handleRefresh} />
           </TabsContent>
 
+          <TabsContent value="sucursales">
+            <SucursalesTab sucursales={sucursales} setSucursales={updateSucursales} onDataChange={handleRefresh} />
+          </TabsContent>
+
           <TabsContent value="payments">
             <PaymentsTab
               payments={payments}
               setPayments={updatePayments}
               suppliers={suppliers}
+              sucursales={sucursales}
               discrepancies={discrepancies}
               onDataChange={handleRefresh}
             />
@@ -372,7 +415,7 @@ export default function Dashboard() {
             <HistoryTab payments={payments} />
           </TabsContent>
 
-          <TabsContent value="users">
+         <TabsContent value="users">
             <UsersTab />
           </TabsContent>
         </Tabs>

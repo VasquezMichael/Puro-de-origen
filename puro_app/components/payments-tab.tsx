@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,18 +32,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Plus, Edit, DollarSign, AlertTriangle, Trash2 } from "lucide-react"
-import type { Payment, Supplier } from "@/app/dashboard/page"
+import { Plus, Edit, DollarSign, AlertTriangle, Trash2, Building2, Calculator } from "lucide-react"
+import type { Payment, Supplier, Sucursal } from "@/app/dashboard/page"
 
 interface PaymentsTabProps {
   payments: Payment[]
   setPayments: (payments: Payment[]) => void
   suppliers: Supplier[]
+  sucursales: Sucursal[]
   discrepancies: Payment[]
   onDataChange?: () => void
 }
 
-export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, onDataChange }: PaymentsTabProps) {
+export function PaymentsTab({
+  payments,
+  setPayments,
+  suppliers,
+  sucursales,
+  discrepancies,
+  onDataChange,
+}: PaymentsTabProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false)
   const [editingPayment, setEditingPayment] = useState<Payment | null>(null)
@@ -51,11 +59,13 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [documentFilter, setDocumentFilter] = useState("all")
+  const [sucursalFilter, setSucursalFilter] = useState("all")
   const [discrepancyFilter, setDiscrepancyFilter] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [formData, setFormData] = useState({
     supplierId: "",
+    sucursalId: "",
     idFactura: "",
     fechaRemito: "",
     fechaRecepcion: "",
@@ -70,22 +80,42 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
     formaPago: "Efectivo" as "Efectivo" | "Mercado Pago" | "BBVA" | "Transferencia bancaria",
   })
 
-  const filteredPayments = payments.filter((payment) => {
-    const matchesSearch =
-      payment.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.idFactura.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtrar pagos con todos los filtros aplicados
+  const filteredPayments = useMemo(() => {
+    return payments.filter((payment) => {
+      const matchesSearch =
+        payment.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.sucursalNombre.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesStatus = statusFilter === "all" || payment.estado === statusFilter
-    const matchesDocument = documentFilter === "all" || payment.tipoDocumento === documentFilter
-    const matchesDiscrepancy = !discrepancyFilter || discrepancies.some((d) => d._id === payment._id)
+      const matchesStatus = statusFilter === "all" || payment.estado === statusFilter
+      const matchesDocument = documentFilter === "all" || payment.tipoDocumento === documentFilter
+      const matchesSucursal = sucursalFilter === "all" || payment.sucursalId === sucursalFilter
+      const matchesDiscrepancy = !discrepancyFilter || discrepancies.some((d) => d._id === payment._id)
 
-    return matchesSearch && matchesStatus && matchesDocument && matchesDiscrepancy
-  })
+      return matchesSearch && matchesStatus && matchesDocument && matchesSucursal && matchesDiscrepancy
+    })
+  }, [payments, searchTerm, statusFilter, documentFilter, sucursalFilter, discrepancyFilter, discrepancies])
+
+  // Calcular totales de los pagos filtrados
+  const filteredTotals = useMemo(() => {
+    const totalFacturas = filteredPayments.length
+    const montoTotal = filteredPayments.reduce((sum, p) => sum + p.montoTotal, 0)
+    const montoPagado = filteredPayments.reduce((sum, p) => sum + p.montoPagado, 0)
+    const saldoPendiente = filteredPayments.reduce((sum, p) => sum + p.saldoPendiente, 0)
+
+    return {
+      totalFacturas,
+      montoTotal,
+      montoPagado,
+      saldoPendiente,
+    }
+  }, [filteredPayments])
 
   const resetForm = () => {
     setFormData({
       supplierId: "",
+      sucursalId: "",
       idFactura: "",
       fechaRemito: "",
       fechaRecepcion: "",
@@ -205,6 +235,7 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
     setEditingPayment(payment)
     setFormData({
       supplierId: payment.supplierId,
+      sucursalId: payment.sucursalId,
       idFactura: payment.idFactura,
       fechaRemito: new Date(payment.fechaRemito).toISOString().split("T")[0],
       fechaRecepcion: new Date(payment.fechaRecepcion).toISOString().split("T")[0],
@@ -271,7 +302,7 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold">Gestión de Pagos</h2>
-          <p className="text-gray-600">Controla las facturas y pagos a proveedores</p>
+          <p className="text-gray-600">Controla las facturas y pagos a proveedores por sucursal</p>
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -314,15 +345,40 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="idFactura">ID Factura *</Label>
-                  <Input
-                    id="idFactura"
-                    value={formData.idFactura}
-                    onChange={(e) => setFormData({ ...formData, idFactura: e.target.value })}
-                    required
+                  <Label htmlFor="sucursal">Sucursal *</Label>
+                  <Select
+                    value={formData.sucursalId}
+                    onValueChange={(value) => setFormData({ ...formData, sucursalId: value })}
                     disabled={isSubmitting}
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona una sucursal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sucursales
+                        .filter((s) => s.activa)
+                        .map((sucursal) => (
+                          <SelectItem key={sucursal._id} value={sucursal._id}>
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4" />
+                              {sucursal.nombre}
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="idFactura">ID Factura *</Label>
+                <Input
+                  id="idFactura"
+                  value={formData.idFactura}
+                  onChange={(e) => setFormData({ ...formData, idFactura: e.target.value })}
+                  required
+                  disabled={isSubmitting}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -440,6 +496,9 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
                     Proveedor: <span className="font-medium">{processingPayment.supplierName}</span>
                   </p>
                   <p className="text-sm text-gray-600">
+                    Sucursal: <span className="font-medium">{processingPayment.sucursalNombre}</span>
+                  </p>
+                  <p className="text-sm text-gray-600">
                     Saldo pendiente:{" "}
                     <span className="font-bold text-red-600">${processingPayment.saldoPendiente.toLocaleString()}</span>
                   </p>
@@ -513,6 +572,7 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
         </Dialog>
       </div>
 
+      {/* Filtros */}
       <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
         <Input
           placeholder="Buscar facturas..."
@@ -543,6 +603,22 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
             <SelectItem value="Remito">Remito</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={sucursalFilter} onValueChange={setSucursalFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas las sucursales</SelectItem>
+            {sucursales.map((sucursal) => (
+              <SelectItem key={sucursal._id} value={sucursal._id}>
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4" />
+                  {sucursal.nombre}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button
           variant={discrepancyFilter ? "default" : "outline"}
           onClick={() => setDiscrepancyFilter(!discrepancyFilter)}
@@ -553,18 +629,50 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
         </Button>
       </div>
 
+      {/* Totalizador */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-blue-800">
+            <Calculator className="h-5 w-5" />
+            Resumen de Facturas Mostradas
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{filteredTotals.totalFacturas}</div>
+              <p className="text-sm text-blue-700">Facturas</p>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-600">${filteredTotals.montoTotal.toLocaleString()}</div>
+              <p className="text-sm text-gray-700">Monto Total</p>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">${filteredTotals.montoPagado.toLocaleString()}</div>
+              <p className="text-sm text-green-700">Pagado</p>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600">${filteredTotals.saldoPendiente.toLocaleString()}</div>
+              <p className="text-sm text-red-700">Saldo Pendiente</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tabla de facturas */}
       <Card>
         <CardHeader>
           <CardTitle>Facturas Registradas</CardTitle>
-          <CardDescription>Lista de todas las facturas y su estado de pago</CardDescription>
+          <CardDescription>Lista de todas las facturas y su estado de pago por sucursal</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Proveedor</TableHead>
-                <TableHead>ID Factura</TableHead>
                 <TableHead>Tipo</TableHead>
+                <TableHead>Fecha Recepción</TableHead>
+                <TableHead>Sucursal</TableHead>
                 <TableHead>Descripción</TableHead>
                 <TableHead>Monto Total</TableHead>
                 <TableHead>Pagado</TableHead>
@@ -582,11 +690,17 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
                       {isDiscrepancy(payment) && <AlertTriangle className="h-4 w-4 text-red-500" />}
                     </div>
                   </TableCell>
-                  <TableCell>{payment.idFactura}</TableCell>
                   <TableCell>
                     <Badge variant={payment.tipoDocumento === "Remito" ? "outline" : "secondary"}>
                       {payment.tipoDocumento}
                     </Badge>
+                  </TableCell>
+                  <TableCell>{new Date(payment.fechaRecepcion).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-purple-500" />
+                      {payment.sucursalNombre}
+                    </div>
                   </TableCell>
                   <TableCell className="max-w-[200px] truncate">{payment.descripcion}</TableCell>
                   <TableCell>${payment.montoTotal.toLocaleString()}</TableCell>
@@ -625,7 +739,7 @@ export function PaymentsTab({ payments, setPayments, suppliers, discrepancies, o
                             <AlertDialogTitle>¿Eliminar Factura?</AlertDialogTitle>
                             <AlertDialogDescription>
                               ¿Estás seguro de que quieres eliminar la factura <strong>{payment.idFactura}</strong> de{" "}
-                              <strong>{payment.supplierName}</strong>?
+                              <strong>{payment.supplierName}</strong> en <strong>{payment.sucursalNombre}</strong>?
                               <br />
                               <br />
                               Esta acción no se puede deshacer y se perderá toda la información asociada, incluyendo el

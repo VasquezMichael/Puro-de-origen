@@ -4,6 +4,8 @@ export interface IPayment extends mongoose.Document {
   idFactura: string
   supplierId: mongoose.Types.ObjectId
   supplierName: string
+  sucursalId: mongoose.Types.ObjectId
+  sucursalNombre: string
   fechaRemito: Date
   fechaRecepcion: Date
   tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito"
@@ -33,6 +35,15 @@ const PaymentSchema = new mongoose.Schema({
     required: true,
   },
   supplierName: {
+    type: String,
+    required: true,
+  },
+  sucursalId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Sucursal",
+    required: true,
+  },
+  sucursalNombre: {
     type: String,
     required: true,
   },

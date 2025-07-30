@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
-import Supplier from "@/lib/Supplier"
+import Supplier from "@/lib/models/Supplier"
 
 export async function GET() {
   try {

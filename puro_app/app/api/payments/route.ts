@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
-import Payment from "@/lib/Payment"
-import Supplier from "@/lib/Supplier"
+import Payment from "@/lib/models/Payment"
+import Supplier from "@/lib/models/Supplier"
+import Sucursal from "@/lib/models/Sucursal"
 
 export async function GET() {
   try {
@@ -26,12 +27,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Supplier not found" }, { status: 404 })
     }
 
+    // Get sucursal name
+    const sucursal = await Sucursal.findById(data.sucursalId)
+    if (!sucursal) {
+      return NextResponse.json({ error: "Sucursal not found" }, { status: 404 })
+    }
+
     // Calculate saldo pendiente
     const saldoPendiente = data.montoTotal - (data.montoPagado || 0)
 
     const payment = await Payment.create({
       ...data,
       supplierName: supplier.nombre,
+      sucursalNombre: sucursal.nombre,
       saldoPendiente,
     })
 
