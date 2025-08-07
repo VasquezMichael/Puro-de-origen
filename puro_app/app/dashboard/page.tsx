@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Users, DollarSign, AlertTriangle, LogOut, RefreshCw, Building2 } from "lucide-react"
+import { Users, DollarSign, AlertTriangle, LogOut, RefreshCw, Building2 } from 'lucide-react'
 import { SuppliersTab } from "@/components/suppliers-tab"
 import { PaymentsTab } from "@/components/payments-tab"
 import { HistoryTab } from "@/components/history-tab"
@@ -15,7 +15,8 @@ import { useRouter } from "next/navigation"
 
 export interface Supplier {
   _id: string
-  nombre: string
+  nombreSistema: string
+  nombreContacto: string
   contacto: {
     telefono: string
   }
@@ -43,15 +44,17 @@ export interface Payment {
   fechaRemito: string
   fechaRecepcion: string
   tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito"
+  tipoGasto: "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros"
   descripcion: string
   montoTotal: number
   montoPagado: number
   saldoPendiente: number
   estado: "Pendiente" | "Pagado" | "Parcialmente Pagado"
+  noReclama: boolean
   historialPagos: Array<{
     fechaPago: string
     monto: number
-    formaPago: "Efectivo" | "Mercado Pago" | "BBVA" | "Transferencia bancaria"
+    formaPago: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria"
   }>
   createdAt: string
 }
@@ -174,18 +177,19 @@ export default function Dashboard() {
     setPayments(newPayments)
   }
 
-  // Calcular métricas
+  // Calcular métricas (excluyendo facturas marcadas como "no reclama")
   const activeSuppliers = suppliers.filter((s) => s.estado === "Activo").length
   const activeSucursales = sucursales.filter((s) => s.activa).length
-  const pendingPayments = payments.filter((p) => p.estado === "Pendiente")
+  const pendingPayments = payments.filter((p) => p.estado === "Pendiente" && !p.noReclama)
   const paidPayments = payments.filter((p) => p.estado === "Pagado")
-  const partialPayments = payments.filter((p) => p.estado === "Parcialmente Pagado")
+  const partialPayments = payments.filter((p) => p.estado === "Parcialmente Pagado" && !p.noReclama)
 
   const totalPending =
     pendingPayments.reduce((sum, p) => sum + p.saldoPendiente, 0) +
     partialPayments.reduce((sum, p) => sum + p.saldoPendiente, 0)
   const totalPaid =
-    paidPayments.reduce((sum, p) => sum + p.montoPagado, 0) + partialPayments.reduce((sum, p) => sum + p.montoPagado, 0)
+    paidPayments.reduce((sum, p) => sum + p.montoPagado, 0) + 
+    payments.filter((p) => p.estado === "Parcialmente Pagado").reduce((sum, p) => sum + p.montoPagado, 0)
 
   // Detectar discrepancias (Remito + Debe Facturar)
   const discrepancies = payments.filter((payment) => {
@@ -260,15 +264,15 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="payments">Pagos</TabsTrigger>
             <TabsTrigger value="suppliers">Proveedores</TabsTrigger>
-            <TabsTrigger value="sucursales">Sucursales</TabsTrigger>
             <TabsTrigger value="history">Historial</TabsTrigger>
-           {/* <TabsTrigger value="users">Usuarios</TabsTrigger>*/}
+            <TabsTrigger value="sucursales">Sucursales</TabsTrigger>
+            {/*<TabsTrigger value="users">Usuarios</TabsTrigger>*/}
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
@@ -304,7 +308,7 @@ export default function Dashboard() {
                 <CardContent>
                   <div className="text-2xl font-bold">${totalPending.toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground">
-                    {pendingPayments.length + partialPayments.length} facturas con saldo
+                    {pendingPayments.length + partialPayments.length} facturas con saldo (excl. no reclama)
                   </p>
                 </CardContent>
               </Card>
@@ -329,7 +333,7 @@ export default function Dashboard() {
                     <DollarSign className="h-5 w-5 text-orange-500" />
                     Pagos Pendientes
                   </CardTitle>
-                  <CardDescription>Facturas con saldo pendiente de pago</CardDescription>
+                  <CardDescription>Facturas con saldo pendiente de pago (excluye "no reclama")</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -339,7 +343,7 @@ export default function Dashboard() {
                           <p className="font-medium">{payment.supplierName}</p>
                           <p className="text-sm text-gray-600">{payment.sucursalNombre}</p>
                           <p className="text-xs text-gray-500">
-                            {payment.tipoDocumento} - {new Date(payment.fechaRecepcion).toLocaleDateString()}
+                            {payment.tipoDocumento} - {new Date(payment.fechaRecepcion).toLocaleDateString("en-GB", { timeZone: "UTC" })}
                           </p>
                         </div>
                         <div className="text-right">
@@ -415,7 +419,7 @@ export default function Dashboard() {
             <HistoryTab payments={payments} />
           </TabsContent>
 
-         <TabsContent value="users">
+          <TabsContent value="users">
             <UsersTab />
           </TabsContent>
         </Tabs>

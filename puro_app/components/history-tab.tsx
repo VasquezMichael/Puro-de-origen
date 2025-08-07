@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calendar, DollarSign, TrendingUp, FileText, Building2 } from "lucide-react"
+import { Calendar, DollarSign, TrendingUp, FileText, Building2, Tag } from 'lucide-react'
 import type { Payment } from "@/app/dashboard/page"
 
 interface HistoryTabProps {
@@ -63,11 +63,15 @@ export function HistoryTab({ payments }: HistoryTabProps) {
   const totalPaid =
     paidPayments.reduce((sum, p) => sum + p.montoPagado, 0) + partialPayments.reduce((sum, p) => sum + p.montoPagado, 0)
   const totalPending =
-    pendingPayments.reduce((sum, p) => sum + p.saldoPendiente, 0) +
-    partialPayments.reduce((sum, p) => sum + p.saldoPendiente, 0)
+    pendingPayments.reduce((sum, p) => sum + (p.noReclama ? 0 : p.saldoPendiente), 0) +
+    partialPayments.reduce((sum, p) => sum + (p.noReclama ? 0 : p.saldoPendiente), 0)
 
-  const getStatusBadge = (status: Payment["estado"]) => {
-    switch (status) {
+  const getStatusBadge = (payment: Payment) => {
+    if (payment.noReclama) {
+      return <Badge className="bg-gray-100 text-gray-800">No Reclama</Badge>
+    }
+    
+    switch (payment.estado) {
       case "Pagado":
         return <Badge className="bg-green-100 text-green-800">Pagado</Badge>
       case "Pendiente":
@@ -77,6 +81,19 @@ export function HistoryTab({ payments }: HistoryTabProps) {
       default:
         return <Badge variant="secondary">Desconocido</Badge>
     }
+  }
+
+  const getTipoGastoBadge = (tipo: Payment["tipoGasto"]) => {
+    const colors = {
+      Mercaderia: "bg-blue-100 text-blue-800",
+      Cocina: "bg-orange-100 text-orange-800", 
+      Reparaciones: "bg-red-100 text-red-800",
+      Inversion: "bg-purple-100 text-purple-800",
+      Oficina: "bg-green-100 text-green-800",
+      Otros: "bg-gray-100 text-gray-800"
+    }
+    
+    return <Badge className={colors[tipo]}>{tipo}</Badge>
   }
 
   return (
@@ -120,7 +137,7 @@ export function HistoryTab({ payments }: HistoryTabProps) {
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">${totalPending.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {pendingPayments.length + partialPayments.length} facturas con saldo
+              Excluye facturas marcadas como "no reclama"
             </p>
           </CardContent>
         </Card>
@@ -168,10 +185,11 @@ export function HistoryTab({ payments }: HistoryTabProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fecha Registro</TableHead>
+                <TableHead>Fecha Remito</TableHead>
                 <TableHead>Proveedor</TableHead>
                 <TableHead>Sucursal</TableHead>
-                <TableHead>Tipo</TableHead>
+                <TableHead>Tipo Doc.</TableHead>
+                <TableHead>Tipo Gasto</TableHead>
                 <TableHead>Fecha Recepción</TableHead>
                 <TableHead>Monto Total</TableHead>
                 <TableHead>Pagado</TableHead>
@@ -182,9 +200,9 @@ export function HistoryTab({ payments }: HistoryTabProps) {
             </TableHeader>
             <TableBody>
               {sortedPayments.map((payment) => (
-                <TableRow key={payment._id}>
-                  <TableCell>{new Date(payment.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell className="font-medium">{payment.supplierName}</TableCell>
+                <TableRow key={payment._id} className={payment.noReclama ? "bg-gray-50" : ""}>
+                  <TableCell className="font-medium">{new Date(payment.fechaRemito).toLocaleDateString()}</TableCell>
+                  <TableCell>{payment.supplierName}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-purple-500" />
@@ -196,13 +214,20 @@ export function HistoryTab({ payments }: HistoryTabProps) {
                       {payment.tipoDocumento}
                     </Badge>
                   </TableCell>
-                  <TableCell>{new Date(payment.fechaRecepcion).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Tag className="h-3 w-3" />
+                      {getTipoGastoBadge(payment.tipoGasto)}
+                    </div>
+                  </TableCell>
+                  <TableCell>{new Date(payment.fechaRecepcion).toLocaleDateString("en-GB", { timeZone: "UTC" })}</TableCell>
                   <TableCell>${payment.montoTotal.toLocaleString()}</TableCell>
                   <TableCell>${payment.montoPagado.toLocaleString()}</TableCell>
-                  <TableCell className={payment.saldoPendiente > 0 ? "text-red-600" : "text-green-600"}>
+                  <TableCell className={payment.saldoPendiente > 0 && !payment.noReclama ? "text-red-600" : "text-green-600"}>
                     ${payment.saldoPendiente.toLocaleString()}
+                    {payment.noReclama && <span className="text-xs text-gray-500 block">(No reclama)</span>}
                   </TableCell>
-                  <TableCell>{getStatusBadge(payment.estado)}</TableCell>
+                  <TableCell>{getStatusBadge(payment)}</TableCell>
                   <TableCell>
                     {payment.historialPagos.length > 0 ? (
                       <div className="text-xs space-y-1">

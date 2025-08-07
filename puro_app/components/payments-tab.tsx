@@ -32,7 +32,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Plus, Edit, DollarSign, AlertTriangle, Trash2, Building2, Calculator } from "lucide-react"
+import { Plus, Edit, DollarSign, AlertTriangle, Trash2, Building2, Calculator, XCircle, CheckCircle, Undo2, Tag } from 'lucide-react'
 import type { Payment, Supplier, Sucursal } from "@/app/dashboard/page"
 
 interface PaymentsTabProps {
@@ -56,11 +56,14 @@ export function PaymentsTab({
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false)
   const [editingPayment, setEditingPayment] = useState<Payment | null>(null)
   const [processingPayment, setProcessingPayment] = useState<Payment | null>(null)
+  const [cancelingPayment, setCancelingPayment] = useState<Payment | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [documentFilter, setDocumentFilter] = useState("all")
   const [sucursalFilter, setSucursalFilter] = useState("all")
+  const [tipoGastoFilter, setTipoGastoFilter] = useState("all")
   const [discrepancyFilter, setDiscrepancyFilter] = useState(false)
+  const [noReclamaFilter, setNoReclamaFilter] = useState("all")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -70,6 +73,7 @@ export function PaymentsTab({
     fechaRemito: "",
     fechaRecepcion: "",
     tipoDocumento: "Factura A" as "Factura A" | "Factura B" | "Factura C" | "Remito",
+    tipoGasto: "Mercaderia" as "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros",
     descripcion: "",
     montoTotal: "",
   })
@@ -77,7 +81,7 @@ export function PaymentsTab({
   const [paymentData, setPaymentData] = useState({
     monto: "",
     fechaPago: "",
-    formaPago: "Efectivo" as "Efectivo" | "Mercado Pago" | "BBVA" | "Transferencia bancaria",
+    formaPago: "Efectivo" as "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria",
   })
 
   // Filtrar pagos con todos los filtros aplicados
@@ -86,23 +90,32 @@ export function PaymentsTab({
       const matchesSearch =
         payment.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         payment.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        payment.sucursalNombre.toLowerCase().includes(searchTerm.toLowerCase())
+        payment.sucursalNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.idFactura.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesStatus = statusFilter === "all" || payment.estado === statusFilter
       const matchesDocument = documentFilter === "all" || payment.tipoDocumento === documentFilter
       const matchesSucursal = sucursalFilter === "all" || payment.sucursalId === sucursalFilter
+      const matchesTipoGasto = tipoGastoFilter === "all" || payment.tipoGasto === tipoGastoFilter
       const matchesDiscrepancy = !discrepancyFilter || discrepancies.some((d) => d._id === payment._id)
+      
+      let matchesNoReclama = true
+      if (noReclamaFilter === "reclama") {
+        matchesNoReclama = !payment.noReclama
+      } else if (noReclamaFilter === "no-reclama") {
+        matchesNoReclama = payment.noReclama
+      }
 
-      return matchesSearch && matchesStatus && matchesDocument && matchesSucursal && matchesDiscrepancy
+      return matchesSearch && matchesStatus && matchesDocument && matchesSucursal && matchesTipoGasto && matchesDiscrepancy && matchesNoReclama
     })
-  }, [payments, searchTerm, statusFilter, documentFilter, sucursalFilter, discrepancyFilter, discrepancies])
+  }, [payments, searchTerm, statusFilter, documentFilter, sucursalFilter, tipoGastoFilter, discrepancyFilter, noReclamaFilter, discrepancies])
 
   // Calcular totales de los pagos filtrados
   const filteredTotals = useMemo(() => {
     const totalFacturas = filteredPayments.length
     const montoTotal = filteredPayments.reduce((sum, p) => sum + p.montoTotal, 0)
     const montoPagado = filteredPayments.reduce((sum, p) => sum + p.montoPagado, 0)
-    const saldoPendiente = filteredPayments.reduce((sum, p) => sum + p.saldoPendiente, 0)
+    const saldoPendiente = filteredPayments.reduce((sum, p) => sum + (p.noReclama ? 0 : p.saldoPendiente), 0)
 
     return {
       totalFacturas,
@@ -120,6 +133,7 @@ export function PaymentsTab({
       fechaRemito: "",
       fechaRecepcion: "",
       tipoDocumento: "Factura A",
+      tipoGasto: "Mercaderia",
       descripcion: "",
       montoTotal: "",
     })
@@ -240,6 +254,7 @@ export function PaymentsTab({
       fechaRemito: new Date(payment.fechaRemito).toISOString().split("T")[0],
       fechaRecepcion: new Date(payment.fechaRecepcion).toISOString().split("T")[0],
       tipoDocumento: payment.tipoDocumento,
+      tipoGasto: payment.tipoGasto,
       descripcion: payment.descripcion,
       montoTotal: payment.montoTotal.toString(),
     })
@@ -254,6 +269,62 @@ export function PaymentsTab({
       formaPago: "Efectivo",
     })
     setIsPaymentDialogOpen(true)
+  }
+
+  const handleToggleNoReclama = async (payment: Payment) => {
+    try {
+      console.log(`🔄 Toggling no reclama for payment: ${payment.idFactura}`)
+      const response = await fetch(`/api/payments/${payment._id}/no-reclama`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ noReclama: !payment.noReclama }),
+      })
+
+      if (response.ok) {
+        const updatedPayment = await response.json()
+        console.log("✅ No reclama updated:", updatedPayment)
+        setPayments(payments.map((p) => (p._id === payment._id ? updatedPayment.payment : p)))
+
+        // Refrescar datos del dashboard
+        if (onDataChange) {
+          onDataChange()
+        }
+      } else {
+        throw new Error(`Error ${response.status}: ${await response.text()}`)
+      }
+    } catch (error) {
+      console.error("💥 Error toggling no reclama:", error)
+      alert("Error al actualizar el estado. Por favor, intenta de nuevo.")
+    }
+  }
+
+  const handleCancelPayments = async (payment: Payment) => {
+    try {
+      console.log(`🔄 Canceling payments for: ${payment.idFactura}`)
+      const response = await fetch(`/api/payments/${payment._id}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirmacion: "CONFIRMAR_CANCELACION" }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log("✅ Payments canceled:", result)
+        setPayments(payments.map((p) => (p._id === payment._id ? result.payment : p)))
+        setCancelingPayment(null)
+        alert("Pagos cancelados exitosamente")
+
+        // Refrescar datos del dashboard
+        if (onDataChange) {
+          onDataChange()
+        }
+      } else {
+        throw new Error(`Error ${response.status}: ${await response.text()}`)
+      }
+    } catch (error) {
+      console.error("💥 Error canceling payments:", error)
+      alert("Error al cancelar los pagos. Por favor, intenta de nuevo.")
+    }
   }
 
   const handleDeletePayment = async (payment: Payment) => {
@@ -280,8 +351,12 @@ export function PaymentsTab({
     }
   }
 
-  const getStatusBadge = (status: Payment["estado"]) => {
-    switch (status) {
+  const getStatusBadge = (payment: Payment) => {
+    if (payment.noReclama) {
+      return <Badge className="bg-gray-100 text-gray-800">No Reclama</Badge>
+    }
+    
+    switch (payment.estado) {
       case "Pagado":
         return <Badge className="bg-green-100 text-green-800">Pagado</Badge>
       case "Pendiente":
@@ -291,6 +366,19 @@ export function PaymentsTab({
       default:
         return <Badge variant="secondary">Desconocido</Badge>
     }
+  }
+
+  const getTipoGastoBadge = (tipo: Payment["tipoGasto"]) => {
+    const colors = {
+      Mercaderia: "bg-blue-100 text-blue-800",
+      Cocina: "bg-orange-100 text-orange-800", 
+      Reparaciones: "bg-red-100 text-red-800",
+      Inversion: "bg-purple-100 text-purple-800",
+      Oficina: "bg-green-100 text-green-800",
+      Otros: "bg-gray-100 text-gray-800"
+    }
+    
+    return <Badge className={colors[tipo]}>{tipo}</Badge>
   }
 
   const isDiscrepancy = (payment: Payment) => {
@@ -336,7 +424,7 @@ export function PaymentsTab({
                         .filter((s) => s.estado === "Activo")
                         .map((supplier) => (
                           <SelectItem key={supplier._id} value={supplier._id}>
-                            {supplier.nombre}
+                            {supplier.nombreSistema}
                             {supplier.debeFacturar && " (Debe Facturar)"}
                           </SelectItem>
                         ))}
@@ -407,7 +495,7 @@ export function PaymentsTab({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="tipoDocumento">Tipo de Documento *</Label>
                   <Select
@@ -425,6 +513,29 @@ export function PaymentsTab({
                       <SelectItem value="Factura B">Factura B</SelectItem>
                       <SelectItem value="Factura C">Factura C</SelectItem>
                       <SelectItem value="Remito">Remito</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tipoGasto">Tipo de Gasto *</Label>
+                  <Select
+                    value={formData.tipoGasto}
+                    onValueChange={(value: "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros") =>
+                      setFormData({ ...formData, tipoGasto: value })
+                    }
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Mercaderia">Mercadería</SelectItem>
+                      <SelectItem value="Cocina">Cocina</SelectItem>
+                      <SelectItem value="Reparaciones">Reparaciones</SelectItem>
+                      <SelectItem value="Inversion">Inversión</SelectItem>
+                      <SelectItem value="Oficina">Oficina</SelectItem>
+                      <SelectItem value="Otros">Otros</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -535,7 +646,7 @@ export function PaymentsTab({
                     <Label htmlFor="formaPago">Forma de Pago *</Label>
                     <Select
                       value={paymentData.formaPago}
-                      onValueChange={(value: "Efectivo" | "Mercado Pago" | "BBVA" | "Transferencia bancaria") =>
+                      onValueChange={(value: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria") =>
                         setPaymentData({ ...paymentData, formaPago: value })
                       }
                       disabled={isSubmitting}
@@ -546,6 +657,7 @@ export function PaymentsTab({
                       <SelectContent>
                         <SelectItem value="Efectivo">Efectivo</SelectItem>
                         <SelectItem value="Mercado Pago">Mercado Pago</SelectItem>
+                        <SelectItem value="Mercado pago Maru">Mercado pago Maru</SelectItem>
                         <SelectItem value="BBVA">BBVA</SelectItem>
                         <SelectItem value="Transferencia bancaria">Transferencia bancaria</SelectItem>
                       </SelectContent>
@@ -603,6 +715,20 @@ export function PaymentsTab({
             <SelectItem value="Remito">Remito</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={tipoGastoFilter} onValueChange={setTipoGastoFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los tipos</SelectItem>
+            <SelectItem value="Mercaderia">Mercadería</SelectItem>
+            <SelectItem value="Cocina">Cocina</SelectItem>
+            <SelectItem value="Reparaciones">Reparaciones</SelectItem>
+            <SelectItem value="Inversion">Inversión</SelectItem>
+            <SelectItem value="Oficina">Oficina</SelectItem>
+            <SelectItem value="Otros">Otros</SelectItem>
+          </SelectContent>
+        </Select>
         <Select value={sucursalFilter} onValueChange={setSucursalFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue />
@@ -617,6 +743,16 @@ export function PaymentsTab({
                 </div>
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+        <Select value={noReclamaFilter} onValueChange={setNoReclamaFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="reclama">Solo Reclama</SelectItem>
+            <SelectItem value="no-reclama">Solo No Reclama</SelectItem>
           </SelectContent>
         </Select>
         <Button
@@ -653,7 +789,7 @@ export function PaymentsTab({
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-red-600">${filteredTotals.saldoPendiente.toLocaleString()}</div>
-              <p className="text-sm text-red-700">Saldo Pendiente</p>
+              <p className="text-sm text-red-700">Saldo Pendiente (excl. no reclama)</p>
             </div>
           </div>
         </CardContent>
@@ -670,7 +806,8 @@ export function PaymentsTab({
             <TableHeader>
               <TableRow>
                 <TableHead>Proveedor</TableHead>
-                <TableHead>Tipo</TableHead>
+                <TableHead>Tipo Doc.</TableHead>
+                <TableHead>Tipo Gasto</TableHead>
                 <TableHead>Fecha Recepción</TableHead>
                 <TableHead>Sucursal</TableHead>
                 <TableHead>Descripción</TableHead>
@@ -683,7 +820,7 @@ export function PaymentsTab({
             </TableHeader>
             <TableBody>
               {filteredPayments.map((payment) => (
-                <TableRow key={payment._id} className={isDiscrepancy(payment) ? "bg-red-50" : ""}>
+                <TableRow key={payment._id} className={isDiscrepancy(payment) ? "bg-red-50" : payment.noReclama ? "bg-gray-50" : ""}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
                       {payment.supplierName}
@@ -695,7 +832,13 @@ export function PaymentsTab({
                       {payment.tipoDocumento}
                     </Badge>
                   </TableCell>
-                  <TableCell>{new Date(payment.fechaRecepcion).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Tag className="h-3 w-3" />
+                      {getTipoGastoBadge(payment.tipoGasto)}
+                    </div>
+                  </TableCell>
+                  <TableCell>{new Date(payment.fechaRecepcion).toLocaleDateString("en-GB", { timeZone: "UTC" })}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-purple-500" />
@@ -705,16 +848,30 @@ export function PaymentsTab({
                   <TableCell className="max-w-[200px] truncate">{payment.descripcion}</TableCell>
                   <TableCell>${payment.montoTotal.toLocaleString()}</TableCell>
                   <TableCell>${payment.montoPagado.toLocaleString()}</TableCell>
-                  <TableCell className={payment.saldoPendiente > 0 ? "text-red-600 font-medium" : "text-green-600"}>
+                  <TableCell className={payment.saldoPendiente > 0 && !payment.noReclama ? "text-red-600 font-medium" : "text-green-600"}>
                     ${payment.saldoPendiente.toLocaleString()}
+                    {payment.noReclama && <span className="text-xs text-gray-500 block">(No reclama)</span>}
                   </TableCell>
-                  <TableCell>{getStatusBadge(payment.estado)}</TableCell>
+                  <TableCell>{getStatusBadge(payment)}</TableCell>
                   <TableCell>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap">
                       <Button variant="outline" size="sm" onClick={() => handleEdit(payment)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      {payment.saldoPendiente > 0 && (
+                      
+                      {/* Botón No Reclama */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleToggleNoReclama(payment)}
+                        className={payment.noReclama ? "text-gray-600 hover:text-gray-700" : "text-orange-600 hover:text-orange-700"}
+                        title={payment.noReclama ? "Marcar como reclama" : "Marcar como no reclama"}
+                      >
+                        {payment.noReclama ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                      </Button>
+
+                      {/* Botón Procesar Pago - solo si tiene saldo pendiente y no es "no reclama" */}
+                      {payment.saldoPendiente > 0 && !payment.noReclama && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -724,6 +881,50 @@ export function PaymentsTab({
                           <DollarSign className="h-4 w-4" />
                         </Button>
                       )}
+
+                      {/* Botón Cancelar Pagos - solo si tiene pagos realizados */}
+                      {payment.montoPagado > 0 && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-orange-600 hover:text-orange-700"
+                              title="Cancelar todos los pagos"
+                            >
+                              <Undo2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>¿Cancelar Todos los Pagos?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                ¿Estás seguro de que quieres <strong>CANCELAR TODOS LOS PAGOS</strong> de la factura{" "}
+                                <strong>{payment.idFactura}</strong>?
+                                <br />
+                                <br />
+                                Esta acción eliminará:
+                                <ul className="list-disc list-inside mt-2 space-y-1">
+                                  <li>{payment.historialPagos.length} pago(s) registrado(s)</li>
+                                  <li>${payment.montoPagado.toLocaleString()} en pagos realizados</li>
+                                </ul>
+                                <br />
+                                La factura volverá al estado "Pendiente" con el monto total como saldo pendiente.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleCancelPayments(payment)}
+                                className="bg-orange-600 hover:bg-orange-700"
+                              >
+                                Sí, Cancelar Pagos
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button

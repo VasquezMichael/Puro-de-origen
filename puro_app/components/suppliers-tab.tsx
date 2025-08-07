@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, Edit, Trash2, Phone, FileText } from "lucide-react"
+import { Plus, Edit, Trash2, Phone, FileText, User } from 'lucide-react'
 import type { Supplier } from "@/app/dashboard/page"
 
 interface SuppliersTabProps {
@@ -36,7 +36,8 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
   const [statusFilter, setStatusFilter] = useState("all")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
-    nombre: "",
+    nombreSistema: "",
+    nombreContacto: "",
     telefono: "",
     informacionVaria: "",
     estado: "Activo" as "Activo" | "Inactivo",
@@ -45,7 +46,8 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
 
   const filteredSuppliers = suppliers.filter((supplier) => {
     const matchesSearch =
-      supplier.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.nombreSistema.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.nombreContacto.toLowerCase().includes(searchTerm.toLowerCase()) ||
       supplier.contacto.telefono.includes(searchTerm)
 
     const matchesStatus = statusFilter === "all" || supplier.estado === statusFilter
@@ -55,7 +57,8 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
 
   const resetForm = () => {
     setFormData({
-      nombre: "",
+      nombreSistema: "",
+      nombreContacto: "",
       telefono: "",
       informacionVaria: "",
       estado: "Activo",
@@ -69,7 +72,8 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
     setIsSubmitting(true)
 
     const supplierData = {
-      nombre: formData.nombre,
+      nombreSistema: formData.nombreSistema,
+      nombreContacto: formData.nombreContacto,
       contacto: {
         telefono: formData.telefono,
       },
@@ -129,7 +133,8 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
   const handleEdit = (supplier: Supplier) => {
     setEditingSupplier(supplier)
     setFormData({
-      nombre: supplier.nombre,
+      nombreSistema: supplier.nombreSistema,
+      nombreContacto: supplier.nombreContacto,
       telefono: supplier.contacto.telefono,
       informacionVaria: supplier.informacionVaria,
       estado: supplier.estado,
@@ -188,13 +193,26 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="nombre">Nombre *</Label>
+                <Label htmlFor="nombreSistema">Nombre en Sistema *</Label>
                 <Input
-                  id="nombre"
-                  value={formData.nombre}
-                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                  id="nombreSistema"
+                  value={formData.nombreSistema}
+                  onChange={(e) => setFormData({ ...formData, nombreSistema: e.target.value })}
                   required
                   disabled={isSubmitting}
+                  placeholder="Nombre como aparece en el sistema"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="nombreContacto">Nombre de Contacto *</Label>
+                <Input
+                  id="nombreContacto"
+                  value={formData.nombreContacto}
+                  onChange={(e) => setFormData({ ...formData, nombreContacto: e.target.value })}
+                  required
+                  disabled={isSubmitting}
+                  placeholder="Nombre de la persona de contacto"
                 />
               </div>
 
@@ -292,7 +310,7 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-lg">{supplier.nombre}</CardTitle>
+                  <CardTitle className="text-lg">{supplier.nombreSistema}</CardTitle>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant={supplier.estado === "Activo" ? "default" : "secondary"}>{supplier.estado}</Badge>
                     {supplier.debeFacturar && (
@@ -306,6 +324,11 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <User className="h-4 w-4" />
+                <span className="font-medium">Contacto:</span> {supplier.nombreContacto}
+              </div>
+
               {supplier.contacto.telefono && (
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Phone className="h-4 w-4" />

@@ -1,7 +1,8 @@
 import mongoose from "mongoose"
 
 export interface ISupplier extends mongoose.Document {
-  nombre: string
+  nombreSistema: string
+  nombreContacto: string
   contacto: {
     telefono: string
   }
@@ -12,9 +13,14 @@ export interface ISupplier extends mongoose.Document {
 }
 
 const SupplierSchema = new mongoose.Schema({
-  nombre: {
+  nombreSistema: {
     type: String,
-    required: [true, "Please provide a supplier name"],
+    required: [true, "Please provide a supplier system name"],
+    trim: true,
+  },
+  nombreContacto: {
+    type: String,
+    required: [true, "Please provide a contact name"],
     trim: true,
   },
   contacto: {

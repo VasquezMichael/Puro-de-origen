@@ -9,15 +9,17 @@ export interface IPayment extends mongoose.Document {
   fechaRemito: Date
   fechaRecepcion: Date
   tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito"
+  tipoGasto: "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros"
   descripcion: string
   montoTotal: number
   montoPagado: number
   saldoPendiente: number
   estado: "Pendiente" | "Pagado" | "Parcialmente Pagado"
+  noReclama: boolean
   historialPagos: Array<{
     fechaPago: Date
     monto: number
-    formaPago: "Efectivo" | "Mercado Pago" | "BBVA" | "Transferencia bancaria"
+    formaPago: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria"
   }>
   createdAt: Date
 }
@@ -60,6 +62,12 @@ const PaymentSchema = new mongoose.Schema({
     enum: ["Factura A", "Factura B", "Factura C", "Remito"],
     required: true,
   },
+  tipoGasto: {
+    type: String,
+    enum: ["Mercaderia", "Cocina", "Reparaciones", "Inversion", "Oficina", "Otros"],
+    required: true,
+    default: "Mercaderia",
+  },
   descripcion: {
     type: String,
     default: "",
@@ -84,6 +92,10 @@ const PaymentSchema = new mongoose.Schema({
     enum: ["Pendiente", "Pagado", "Parcialmente Pagado"],
     default: "Pendiente",
   },
+  noReclama: {
+    type: Boolean,
+    default: false,
+  },
   historialPagos: [
     {
       fechaPago: {
@@ -97,7 +109,7 @@ const PaymentSchema = new mongoose.Schema({
       },
       formaPago: {
         type: String,
-        enum: ["Efectivo", "Mercado Pago", "BBVA", "Transferencia bancaria"],
+        enum: ["Efectivo", "Mercado Pago", "Mercado pago Maru", "BBVA", "Transferencia bancaria"],
         required: true,
       },
     },

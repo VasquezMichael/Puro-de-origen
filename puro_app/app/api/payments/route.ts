@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     const data = await request.json()
 
-    // Get supplier name
+    // Get supplier name - usar nombreSistema en lugar de nombre
     const supplier = await Supplier.findById(data.supplierId)
     if (!supplier) {
       return NextResponse.json({ error: "Supplier not found" }, { status: 404 })
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     const payment = await Payment.create({
       ...data,
-      supplierName: supplier.nombre,
+      supplierName: supplier.nombreSistema, // Cambiar de supplier.nombre a supplier.nombreSistema
       sucursalNombre: sucursal.nombre,
       saldoPendiente,
     })
