@@ -15,13 +15,20 @@ import { useRouter } from "next/navigation"
 
 export interface Supplier {
   _id: string
+  nombre: string
   nombreSistema: string
-  nombreContacto: string
+  sector?: "cocina" | "dietetica" | "otros"
+  nombreContacto?: string
   contacto: {
-    telefono: string
+    telefono?: string
+    email?: string
   }
+  datosWeb?: string
+  urlWeb?: string
+  condiciones?: string
+  actualizacionPrecios?: string
   estado: "Activo" | "Inactivo"
-  informacionVaria: string
+  informacionVaria?: string
   debeFacturar: boolean
   createdAt: string
 }
