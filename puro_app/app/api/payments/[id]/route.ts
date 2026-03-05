@@ -1,12 +1,49 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Payment from "@/lib/models/Payment"
+import Supplier from "@/lib/models/Supplier"
+import Sucursal from "@/lib/models/Sucursal"
+
+async function getOrCreateGeneralSucursal() {
+  let sucursal = await Sucursal.findOne({ nombre: "Todas" })
+  if (!sucursal) {
+    sucursal = await Sucursal.create({
+      nombre: "Todas",
+      direccion: "Gasto general distribuido",
+      activa: false,
+    })
+  }
+  return sucursal
+}
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await dbConnect()
 
     const data = await request.json()
+
+    if (data.supplierId) {
+      const supplier = await Supplier.findById(data.supplierId)
+      if (!supplier) {
+        return NextResponse.json({ error: "Supplier not found" }, { status: 404 })
+      }
+      data.supplierName = supplier.nombreSistema
+    }
+
+    if (data.sucursalId) {
+      let sucursal
+      if (data.sucursalId === "__TODAS__") {
+        sucursal = await getOrCreateGeneralSucursal()
+        data.sucursalId = sucursal._id
+      } else {
+        sucursal = await Sucursal.findById(data.sucursalId)
+      }
+
+      if (!sucursal) {
+        return NextResponse.json({ error: "Sucursal not found" }, { status: 404 })
+      }
+      data.sucursalNombre = sucursal.nombre
+    }
 
     // Recalculate saldo pendiente and estado
     if (data.montoPagado !== undefined) {

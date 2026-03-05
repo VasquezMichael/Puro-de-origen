@@ -30,6 +30,7 @@ const PaymentSchema = new mongoose.Schema({
     required: [true, "Please provide an invoice ID"],
     unique: true,
     trim: true,
+    default: () => `AUTO-${new mongoose.Types.ObjectId().toString()}`,
   },
   supplierId: {
     type: mongoose.Schema.Types.ObjectId,
