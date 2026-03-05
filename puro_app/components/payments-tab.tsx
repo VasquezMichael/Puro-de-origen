@@ -249,7 +249,7 @@ export function PaymentsTab({
     setEditingPayment(payment)
     setFormData({
       supplierId: payment.supplierId,
-      sucursalId: payment.sucursalId,
+      sucursalId: payment.sucursalNombre === "Todas" ? "__TODAS__" : payment.sucursalId,
       idFactura: payment.idFactura,
       fechaRemito: new Date(payment.fechaRemito).toISOString().split("T")[0],
       fechaRecepcion: new Date(payment.fechaRecepcion).toISOString().split("T")[0],
@@ -443,8 +443,14 @@ export function PaymentsTab({
                       <SelectValue placeholder="Selecciona una sucursal" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="__TODAS__">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-4 w-4" />
+                          Todas (Gasto general)
+                        </div>
+                      </SelectItem>
                       {sucursales
-                        .filter((s) => s.activa)
+                        .filter((s) => s.activa || s.nombre === "Todas")
                         .map((sucursal) => (
                           <SelectItem key={sucursal._id} value={sucursal._id}>
                             <div className="flex items-center gap-2">
@@ -459,13 +465,13 @@ export function PaymentsTab({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="idFactura">ID Factura *</Label>
+                <Label htmlFor="idFactura">ID Factura (opcional)</Label>
                 <Input
                   id="idFactura"
                   value={formData.idFactura}
                   onChange={(e) => setFormData({ ...formData, idFactura: e.target.value })}
-                  required
                   disabled={isSubmitting}
+                  placeholder="Si se deja vacio, se genera automaticamente"
                 />
               </div>
 
