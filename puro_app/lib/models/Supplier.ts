@@ -1,18 +1,30 @@
 import mongoose from "mongoose"
 
 export interface ISupplier extends mongoose.Document {
+  nombre: string
   nombreSistema: string
-  nombreContacto: string
+  sector?: "cocina" | "dietetica" | "otros"
+  nombreContacto?: string
   contacto: {
-    telefono: string
+    telefono?: string
+    email?: string
   }
+  datosWeb?: string
+  urlWeb?: string
+  condiciones?: string
+  actualizacionPrecios?: string
   estado: "Activo" | "Inactivo"
-  informacionVaria: string
+  informacionVaria?: string
   debeFacturar: boolean
   createdAt: Date
 }
 
 const SupplierSchema = new mongoose.Schema({
+  nombre: {
+    type: String,
+    required: [true, "Please provide a supplier name"],
+    trim: true,
+  },
   nombreSistema: {
     type: String,
     required: [true, "Please provide a supplier system name"],
@@ -20,14 +32,42 @@ const SupplierSchema = new mongoose.Schema({
   },
   nombreContacto: {
     type: String,
-    required: [true, "Please provide a contact name"],
     trim: true,
+    default: "",
+  },
+  sector: {
+    type: String,
+    enum: ["cocina", "dietetica", "otros"],
+    default: "otros",
   },
   contacto: {
     telefono: {
       type: String,
       default: "",
     },
+    email: {
+      type: String,
+      default: "",
+      trim: true,
+      lowercase: true,
+    },
+  },
+  datosWeb: {
+    type: String,
+    default: "",
+  },
+  urlWeb: {
+    type: String,
+    default: "",
+    trim: true,
+  },
+  condiciones: {
+    type: String,
+    default: "",
+  },
+  actualizacionPrecios: {
+    type: String,
+    default: "",
   },
   estado: {
     type: String,
@@ -40,6 +80,7 @@ const SupplierSchema = new mongoose.Schema({
   },
   debeFacturar: {
     type: Boolean,
+    required: true,
     default: false,
   },
   createdAt: {
