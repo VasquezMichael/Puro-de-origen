@@ -1,9 +1,13 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const geist = localFont({
+  src: "./fonts/GeistVF.woff",
+  weight: "100 900",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Control de Pagos a Proveedores",
@@ -17,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={inter.className}>{children}</body>
+      <body className={geist.className}>{children}</body>
     </html>
   )
 }
