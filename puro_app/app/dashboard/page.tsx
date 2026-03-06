@@ -50,18 +50,18 @@ export interface Payment {
   sucursalNombre: string
   fechaRemito: string
   fechaRecepcion: string
-  tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito"
+  tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito" | "Nota de Credito"
   tipoGasto: "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros"
   descripcion: string
   montoTotal: number
   montoPagado: number
   saldoPendiente: number
-  estado: "Pendiente" | "Pagado" | "Parcialmente Pagado"
+  estado: "Pendiente" | "Pagado" | "Parcialmente Pagado" | "Cobrado"
   noReclama: boolean
   historialPagos: Array<{
     fechaPago: string
     monto: number
-    formaPago: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria"
+    formaPago: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "BBVA credito" | "Deposito"
   }>
   createdAt: string
 }

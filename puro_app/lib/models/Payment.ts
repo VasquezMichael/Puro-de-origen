@@ -8,18 +8,18 @@ export interface IPayment extends mongoose.Document {
   sucursalNombre: string
   fechaRemito: Date
   fechaRecepcion: Date
-  tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito"
+  tipoDocumento: "Factura A" | "Factura B" | "Factura C" | "Remito" | "Nota de Credito"
   tipoGasto: "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros"
   descripcion: string
   montoTotal: number
   montoPagado: number
   saldoPendiente: number
-  estado: "Pendiente" | "Pagado" | "Parcialmente Pagado"
+  estado: "Pendiente" | "Pagado" | "Parcialmente Pagado" | "Cobrado"
   noReclama: boolean
   historialPagos: Array<{
     fechaPago: Date
     monto: number
-    formaPago: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria"
+    formaPago: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "BBVA credito" | "Deposito"
   }>
   createdAt: Date
 }
@@ -60,7 +60,7 @@ const PaymentSchema = new mongoose.Schema({
   },
   tipoDocumento: {
     type: String,
-    enum: ["Factura A", "Factura B", "Factura C", "Remito"],
+    enum: ["Factura A", "Factura B", "Factura C", "Remito", "Nota de Credito"],
     required: true,
   },
   tipoGasto: {
@@ -76,7 +76,6 @@ const PaymentSchema = new mongoose.Schema({
   montoTotal: {
     type: Number,
     required: true,
-    min: 0,
   },
   montoPagado: {
     type: Number,
@@ -86,11 +85,10 @@ const PaymentSchema = new mongoose.Schema({
   saldoPendiente: {
     type: Number,
     required: true,
-    min: 0,
   },
   estado: {
     type: String,
-    enum: ["Pendiente", "Pagado", "Parcialmente Pagado"],
+    enum: ["Pendiente", "Pagado", "Parcialmente Pagado", "Cobrado"],
     default: "Pendiente",
   },
   noReclama: {
@@ -110,7 +108,7 @@ const PaymentSchema = new mongoose.Schema({
       },
       formaPago: {
         type: String,
-        enum: ["Efectivo", "Mercado Pago", "Mercado pago Maru", "BBVA", "Transferencia bancaria"],
+        enum: ["Efectivo", "Mercado Pago", "Mercado pago Maru", "BBVA", "BBVA credito", "Deposito"],
         required: true,
       },
     },
@@ -119,6 +117,15 @@ const PaymentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+})
+
+// Garantiza idFactura incluso si el cliente envia "".
+PaymentSchema.pre("validate", function (this: any, next) {
+  const current = typeof this.idFactura === "string" ? this.idFactura.trim() : ""
+  if (!current) {
+    this.idFactura = `AUTO-${new mongoose.Types.ObjectId().toString()}`
+  }
+  next()
 })
 
 export default mongoose.models.Payment || mongoose.model<IPayment>("Payment", PaymentSchema)

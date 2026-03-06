@@ -72,7 +72,7 @@ export function PaymentsTab({
     idFactura: "",
     fechaRemito: "",
     fechaRecepcion: "",
-    tipoDocumento: "Factura A" as "Factura A" | "Factura B" | "Factura C" | "Remito",
+    tipoDocumento: "Factura A" as "Factura A" | "Factura B" | "Factura C" | "Remito" | "Nota de Credito",
     tipoGasto: "Mercaderia" as "Mercaderia" | "Cocina" | "Reparaciones" | "Inversion" | "Oficina" | "Otros",
     descripcion: "",
     montoTotal: "",
@@ -81,7 +81,7 @@ export function PaymentsTab({
   const [paymentData, setPaymentData] = useState({
     monto: "",
     fechaPago: "",
-    formaPago: "Efectivo" as "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria",
+    formaPago: "Efectivo" as "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "BBVA credito" | "Deposito",
   })
 
   // Filtrar pagos con todos los filtros aplicados
@@ -298,6 +298,32 @@ export function PaymentsTab({
     }
   }
 
+  const handleToggleCreditNote = async (payment: Payment) => {
+    if (payment.tipoDocumento !== "Nota de Credito") return
+
+    try {
+      const response = await fetch(`/api/payments/${payment._id}/credit-note`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cobrado: payment.estado !== "Cobrado" }),
+      })
+
+      if (response.ok) {
+        const updatedPayment = await response.json()
+        setPayments(payments.map((p) => (p._id === payment._id ? updatedPayment.payment : p)))
+
+        if (onDataChange) {
+          onDataChange()
+        }
+      } else {
+        throw new Error(`Error ${response.status}: ${await response.text()}`)
+      }
+    } catch (error) {
+      console.error("Error toggling credit note status:", error)
+      alert("Error al actualizar el estado de la Nota de Credito.")
+    }
+  }
+
   const handleCancelPayments = async (payment: Payment) => {
     try {
       console.log(`🔄 Canceling payments for: ${payment.idFactura}`)
@@ -359,6 +385,8 @@ export function PaymentsTab({
     switch (payment.estado) {
       case "Pagado":
         return <Badge className="bg-green-100 text-green-800">Pagado</Badge>
+      case "Cobrado":
+        return <Badge className="bg-blue-100 text-blue-800">Cobrado</Badge>
       case "Pendiente":
         return <Badge variant="outline">Pendiente</Badge>
       case "Parcialmente Pagado":
@@ -506,7 +534,7 @@ export function PaymentsTab({
                   <Label htmlFor="tipoDocumento">Tipo de Documento *</Label>
                   <Select
                     value={formData.tipoDocumento}
-                    onValueChange={(value: "Factura A" | "Factura B" | "Factura C" | "Remito") =>
+                    onValueChange={(value: "Factura A" | "Factura B" | "Factura C" | "Remito" | "Nota de Credito") =>
                       setFormData({ ...formData, tipoDocumento: value })
                     }
                     disabled={isSubmitting}
@@ -519,6 +547,7 @@ export function PaymentsTab({
                       <SelectItem value="Factura B">Factura B</SelectItem>
                       <SelectItem value="Factura C">Factura C</SelectItem>
                       <SelectItem value="Remito">Remito</SelectItem>
+                      <SelectItem value="Nota de Credito">Nota de Credito</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -552,6 +581,7 @@ export function PaymentsTab({
                     id="montoTotal"
                     type="number"
                     step="0.01"
+                    min={formData.tipoDocumento === "Nota de Credito" ? undefined : 0}
                     value={formData.montoTotal}
                     onChange={(e) => setFormData({ ...formData, montoTotal: e.target.value })}
                     required
@@ -652,7 +682,7 @@ export function PaymentsTab({
                     <Label htmlFor="formaPago">Forma de Pago *</Label>
                     <Select
                       value={paymentData.formaPago}
-                      onValueChange={(value: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "Transferencia bancaria") =>
+                      onValueChange={(value: "Efectivo" | "Mercado Pago" | "Mercado pago Maru" | "BBVA" | "BBVA credito" | "Deposito") =>
                         setPaymentData({ ...paymentData, formaPago: value })
                       }
                       disabled={isSubmitting}
@@ -665,7 +695,8 @@ export function PaymentsTab({
                         <SelectItem value="Mercado Pago">Mercado Pago</SelectItem>
                         <SelectItem value="Mercado pago Maru">Mercado pago Maru</SelectItem>
                         <SelectItem value="BBVA">BBVA</SelectItem>
-                        <SelectItem value="Transferencia bancaria">Transferencia bancaria</SelectItem>
+                        <SelectItem value="BBVA credito">BBVA credito</SelectItem>
+                        <SelectItem value="Deposito">Deposito</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -707,6 +738,7 @@ export function PaymentsTab({
             <SelectItem value="Pendiente">Pendientes</SelectItem>
             <SelectItem value="Pagado">Pagados</SelectItem>
             <SelectItem value="Parcialmente Pagado">Parcialmente Pagados</SelectItem>
+            <SelectItem value="Cobrado">Cobrados (NC)</SelectItem>
           </SelectContent>
         </Select>
         <Select value={documentFilter} onValueChange={setDocumentFilter}>
@@ -719,6 +751,7 @@ export function PaymentsTab({
             <SelectItem value="Factura B">Factura B</SelectItem>
             <SelectItem value="Factura C">Factura C</SelectItem>
             <SelectItem value="Remito">Remito</SelectItem>
+            <SelectItem value="Nota de Credito">Nota de Credito</SelectItem>
           </SelectContent>
         </Select>
         <Select value={tipoGastoFilter} onValueChange={setTipoGastoFilter}>
@@ -834,7 +867,13 @@ export function PaymentsTab({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={payment.tipoDocumento === "Remito" ? "outline" : "secondary"}>
+                    <Badge
+                      variant={
+                        payment.tipoDocumento === "Remito" || payment.tipoDocumento === "Nota de Credito"
+                          ? "outline"
+                          : "secondary"
+                      }
+                    >
                       {payment.tipoDocumento}
                     </Badge>
                   </TableCell>
@@ -864,7 +903,23 @@ export function PaymentsTab({
                       <Button variant="outline" size="sm" onClick={() => handleEdit(payment)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      
+
+
+                      {payment.tipoDocumento === "Nota de Credito" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleToggleCreditNote(payment)}
+                          className={
+                            payment.estado === "Cobrado"
+                              ? "text-blue-600 hover:text-blue-700"
+                              : "text-cyan-700 hover:text-cyan-800"
+                          }
+                          title={payment.estado === "Cobrado" ? "Marcar como pendiente" : "Marcar como ya cobrada"}
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                        </Button>
+                      )}                      
                       {/* Botón No Reclama */}
                       <Button
                         variant="outline"
@@ -984,3 +1039,4 @@ export function PaymentsTab({
     </div>
   )
 }
+

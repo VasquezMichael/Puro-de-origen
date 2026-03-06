@@ -74,6 +74,8 @@ export function HistoryTab({ payments }: HistoryTabProps) {
     switch (payment.estado) {
       case "Pagado":
         return <Badge className="bg-green-100 text-green-800">Pagado</Badge>
+      case "Cobrado":
+        return <Badge className="bg-blue-100 text-blue-800">Cobrado</Badge>
       case "Pendiente":
         return <Badge variant="outline">Pendiente</Badge>
       case "Parcialmente Pagado":
@@ -210,7 +212,7 @@ export function HistoryTab({ payments }: HistoryTabProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={payment.tipoDocumento === "Remito" ? "outline" : "secondary"}>
+                    <Badge variant={payment.tipoDocumento === "Remito" || payment.tipoDocumento === "Nota de Credito" ? "outline" : "secondary"}>
                       {payment.tipoDocumento}
                     </Badge>
                   </TableCell>

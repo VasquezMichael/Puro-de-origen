@@ -17,6 +17,13 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       return NextResponse.json({ error: "Payment not found" }, { status: 404 })
     }
 
+    if (payment.tipoDocumento === "Nota de Credito") {
+      return NextResponse.json(
+        { error: "No se puede registrar pago sobre una Nota de Credito" },
+        { status: 400 },
+      )
+    }
+
     // Add payment to history
     payment.historialPagos.push({
       fechaPago: new Date(fechaPago),
