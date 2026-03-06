@@ -45,15 +45,66 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       data.sucursalNombre = sucursal.nombre
     }
 
-    // Recalculate saldo pendiente and estado
-    if (data.montoPagado !== undefined) {
-      data.saldoPendiente = data.montoTotal - data.montoPagado
+    const shouldRecalculate =
+      data.montoPagado !== undefined ||
+      data.montoTotal !== undefined ||
+      data.tipoDocumento !== undefined ||
+      data.estado !== undefined
 
-      if (data.montoPagado === 0) {
+    // Recalculate saldo pendiente and estado
+    if (shouldRecalculate) {
+      const current = await Payment.findById(params.id)
+      if (!current) {
+        return NextResponse.json({ error: "Payment not found" }, { status: 404 })
+      }
+
+      data.tipoDocumento = data.tipoDocumento ?? current.tipoDocumento
+      data.montoTotal = data.montoTotal ?? current.montoTotal
+      data.montoPagado = data.montoPagado ?? current.montoPagado
+
+      if (data.tipoDocumento === "Nota de Credito") {
+        if (data.montoTotal >= 0) {
+          return NextResponse.json(
+            { error: "Para Nota de Credito el montoTotal debe ser negativo" },
+            { status: 400 },
+          )
+        }
+        data.montoPagado = 0
+        if (data.estado && data.estado !== "Pendiente" && data.estado !== "Cobrado") {
+          return NextResponse.json(
+            { error: "Para Nota de Credito el estado debe ser Pendiente o Cobrado" },
+            { status: 400 },
+          )
+        }
+      } else if (data.montoTotal < 0) {
+        return NextResponse.json(
+          { error: "Solo Nota de Credito permite montoTotal negativo" },
+          { status: 400 },
+        )
+      } else if (data.estado === "Cobrado") {
+        return NextResponse.json(
+          { error: "El estado Cobrado solo aplica a Nota de Credito" },
+          { status: 400 },
+        )
+      }
+
+      if (data.tipoDocumento === "Nota de Credito") {
+        const estadoNotaCredito = data.estado ?? current.estado
+        if (estadoNotaCredito === "Cobrado") {
+          data.estado = "Cobrado"
+          data.saldoPendiente = 0
+        } else {
+          data.estado = "Pendiente"
+          data.saldoPendiente = data.montoTotal
+        }
+      } else if (data.montoPagado === 0) {
+        data.saldoPendiente = data.montoTotal - data.montoPagado
         data.estado = "Pendiente"
       } else if (data.montoPagado >= data.montoTotal) {
+        data.saldoPendiente = data.montoTotal - data.montoPagado
         data.estado = "Pagado"
       } else {
+        data.saldoPendiente = data.montoTotal - data.montoPagado
         data.estado = "Parcialmente Pagado"
       }
     }

@@ -60,6 +60,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate saldo pendiente
+    if (data.tipoDocumento === "Nota de Credito") {
+      if (data.montoTotal >= 0) {
+        return NextResponse.json(
+          { error: "Para Nota de Credito el montoTotal debe ser negativo" },
+          { status: 400 },
+        )
+      }
+      data.montoPagado = 0
+      data.estado = "Pendiente"
+      data.noReclama = false
+    } else if (data.montoTotal < 0) {
+      return NextResponse.json(
+        { error: "Solo Nota de Credito permite montoTotal negativo" },
+        { status: 400 },
+      )
+    } else if (data.estado === "Cobrado") {
+      return NextResponse.json(
+        { error: "El estado Cobrado solo aplica a Nota de Credito" },
+        { status: 400 },
+      )
+    }
+
     const saldoPendiente = data.montoTotal - (data.montoPagado || 0)
 
     const payment = await Payment.create({

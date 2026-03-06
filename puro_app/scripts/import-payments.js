@@ -3,7 +3,7 @@
 //   npm run import:payments -- ./archivo.xlsx
 //
 // Encabezados esperados:
-// supplierNombreSistema,sucursalNombre,fechaRemito,fechaRecepcion,tipoDocumento,tipoGasto,descripcion,montoTotal,montoPagado,noReclama,estado
+// supplierNombreSistema,sucursalNombre,fechaRemito,fechaRecepcion,tipoDocumento,tipoGasto,descripcion,montoTotal,montoPagado,fechaPago,formaPago,noReclama,estado
 // Opcional: idFactura (si no viene, se genera automaticamente)
 
 const fs = require("fs")
@@ -41,7 +41,11 @@ const PaymentSchema = new mongoose.Schema({
   sucursalNombre: { type: String, required: true },
   fechaRemito: { type: Date, required: true },
   fechaRecepcion: { type: Date, required: true },
-  tipoDocumento: { type: String, enum: ["Factura A", "Factura B", "Factura C", "Remito"], required: true },
+  tipoDocumento: {
+    type: String,
+    enum: ["Factura A", "Factura B", "Factura C", "Remito", "Nota de Credito"],
+    required: true,
+  },
   tipoGasto: {
     type: String,
     enum: ["Mercaderia", "Cocina", "Reparaciones", "Inversion", "Oficina", "Otros"],
@@ -49,10 +53,10 @@ const PaymentSchema = new mongoose.Schema({
     default: "Mercaderia",
   },
   descripcion: { type: String, default: "" },
-  montoTotal: { type: Number, required: true, min: 0 },
+  montoTotal: { type: Number, required: true },
   montoPagado: { type: Number, default: 0, min: 0 },
-  saldoPendiente: { type: Number, required: true, min: 0 },
-  estado: { type: String, enum: ["Pendiente", "Pagado", "Parcialmente Pagado"], default: "Pendiente" },
+  saldoPendiente: { type: Number, required: true },
+  estado: { type: String, enum: ["Pendiente", "Pagado", "Parcialmente Pagado", "Cobrado"], default: "Pendiente" },
   noReclama: { type: Boolean, default: false },
   historialPagos: [
     {
@@ -60,7 +64,7 @@ const PaymentSchema = new mongoose.Schema({
       monto: { type: Number, required: true, min: 0 },
       formaPago: {
         type: String,
-        enum: ["Efectivo", "Mercado Pago", "Mercado pago Maru", "BBVA", "Transferencia bancaria"],
+        enum: ["Efectivo", "Mercado Pago", "Mercado pago Maru", "BBVA", "BBVA credito", "Deposito"],
         required: true,
       },
     },
@@ -104,7 +108,15 @@ const REQUIRED_HEADERS = [
   "tipoGasto",
   "montoTotal",
 ]
-const OPTIONAL_HEADERS = ["idFactura", "descripcion", "montoPagado", "noReclama", "estado"]
+const OPTIONAL_HEADERS = [
+  "idFactura",
+  "descripcion",
+  "montoPagado",
+  "fechaPago",
+  "formaPago",
+  "noReclama",
+  "estado",
+]
 
 function generateAutoInvoiceId() {
   return `AUTO-${new mongoose.Types.ObjectId().toString()}`
@@ -199,6 +211,9 @@ function normalizeTipoDocumento(value) {
     "factura b": "Factura B",
     "factura c": "Factura C",
     remito: "Remito",
+    "nota de credito": "Nota de Credito",
+    "nota de crédito": "Nota de Credito",
+    nc: "Nota de Credito",
   }
   return map[normalized] || null
 }
@@ -218,20 +233,40 @@ function normalizeTipoGasto(value) {
   return map[normalized] || null
 }
 
-function normalizeEstado(value, montoTotal, montoPagado) {
+function normalizeEstado(value, tipoDocumento, montoTotal, montoPagado) {
   const normalized = toStringOrEmpty(value).toLowerCase()
   const map = {
     pendiente: "Pendiente",
     pagado: "Pagado",
     "parcialmente pagado": "Parcialmente Pagado",
     parcial: "Parcialmente Pagado",
+    cobrado: "Cobrado",
+    cobrada: "Cobrado",
+    "ya cobrado": "Cobrado",
+    "ya cobrada": "Cobrado",
+    aplicado: "Cobrado",
   }
   if (map[normalized]) return map[normalized]
 
   // Si no viene estado, se calcula en base al pago.
+  if (tipoDocumento === "Nota de Credito") return "Pendiente"
   if (montoPagado <= 0) return "Pendiente"
   if (montoPagado >= montoTotal) return "Pagado"
   return "Parcialmente Pagado"
+}
+
+function normalizeFormaPago(value) {
+  const normalized = toStringOrEmpty(value).toLowerCase()
+  const map = {
+    efectivo: "Efectivo",
+    "mercado pago": "Mercado Pago",
+    "mercado pago maru": "Mercado pago Maru",
+    bbva: "BBVA",
+    "bbva credito": "BBVA credito",
+    deposito: "Deposito",
+    depósito: "Deposito",
+  }
+  return map[normalized] || null
 }
 
 function validateHeaders(headers) {
@@ -252,8 +287,10 @@ function mapRow(row, rowNumber) {
   const montoTotal = parseNumberFlexible(row.montoTotal)
   const montoPagadoRaw = parseNumberFlexible(row.montoPagado)
   const montoPagado = montoPagadoRaw === null ? 0 : montoPagadoRaw
+  const fechaPago = parseDateFlexible(row.fechaPago)
+  const formaPago = normalizeFormaPago(row.formaPago)
   const noReclama = parseBooleanFlexible(row.noReclama)
-  const estado = normalizeEstado(row.estado, montoTotal ?? 0, montoPagado)
+  const estado = normalizeEstado(row.estado, tipoDocumento, montoTotal ?? 0, montoPagado)
 
   const errors = []
   if (!supplierNombreSistema) errors.push("supplierNombreSistema es obligatorio")
@@ -264,18 +301,40 @@ function mapRow(row, rowNumber) {
   if (!tipoGasto) errors.push("tipoGasto invalido")
   if (montoTotal === null) errors.push("montoTotal invalido")
   if (montoPagadoRaw === null && toStringOrEmpty(row.montoPagado)) errors.push("montoPagado invalido")
+  if (montoPagado > 0 && !fechaPago) errors.push("fechaPago es obligatoria cuando montoPagado > 0")
+  if (montoPagado > 0 && !formaPago) errors.push("formaPago es obligatoria cuando montoPagado > 0")
   if (noReclama === null) errors.push("noReclama invalido")
   if (!estado) errors.push("estado invalido")
 
-  if (montoTotal !== null && montoTotal < 0) errors.push("montoTotal no puede ser negativo")
+  if (tipoDocumento === "Nota de Credito") {
+    if (montoTotal !== null && montoTotal >= 0) {
+      errors.push("para Nota de Credito el montoTotal debe ser negativo")
+    }
+    if (montoPagado > 0) {
+      errors.push("una Nota de Credito no debe tener montoPagado")
+    }
+    if (estado !== "Pendiente" && estado !== "Cobrado") {
+      errors.push("para Nota de Credito el estado debe ser Pendiente o Cobrado")
+    }
+  } else if (montoTotal !== null && montoTotal < 0) {
+    errors.push("solo Nota de Credito permite montoTotal negativo")
+  } else if (estado === "Cobrado") {
+    errors.push('el estado "Cobrado" solo aplica a Nota de Credito')
+  }
+
   if (montoPagado < 0) errors.push("montoPagado no puede ser negativo")
-  if (montoTotal !== null && montoPagado > montoTotal) errors.push("montoPagado no puede superar montoTotal")
+  if (montoTotal !== null && montoTotal >= 0 && montoPagado > montoTotal) {
+    errors.push("montoPagado no puede superar montoTotal")
+  }
 
   if (errors.length > 0) {
     return { ok: false, rowNumber, errors, raw: row }
   }
 
-  const saldoPendiente = Math.max(0, Number((montoTotal - montoPagado).toFixed(2)))
+  const saldoPendiente =
+    tipoDocumento === "Nota de Credito" && estado === "Cobrado"
+      ? 0
+      : Number((montoTotal - montoPagado).toFixed(2))
 
   return {
     ok: true,
@@ -291,6 +350,8 @@ function mapRow(row, rowNumber) {
       descripcion,
       montoTotal,
       montoPagado,
+      fechaPago,
+      formaPago,
       saldoPendiente,
       estado,
       noReclama,
@@ -431,7 +492,16 @@ async function run() {
       saldoPendiente: row.saldoPendiente,
       estado: row.estado,
       noReclama: row.noReclama,
-      historialPagos: [],
+      historialPagos:
+        row.montoPagado > 0
+          ? [
+              {
+                fechaPago: row.fechaPago,
+                monto: row.montoPagado,
+                formaPago: row.formaPago,
+              },
+            ]
+          : [],
     })
 
     inserted += 1
