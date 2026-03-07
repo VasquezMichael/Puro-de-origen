@@ -1,0 +1,982 @@
+[
+  {
+    "rowNumber": 2,
+    "supplierNombreSistema": "Casalta (Porta hermanos)",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 127344,
+    "fechaPagoOriginal": "46038",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 10,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 345000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 13,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 99395,
+    "fechaPagoOriginal": "46024",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 21,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 135000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 31,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 280000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 42,
+    "supplierNombreSistema": "La serenisima",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 265677,
+    "fechaPagoOriginal": "46030",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 48,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 348000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 51,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 84955,
+    "fechaPagoOriginal": "46031",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 67,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 240000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 78,
+    "supplierNombreSistema": "Verduleria",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 111400,
+    "fechaPagoOriginal": "46030",
+    "formaPagoOriginal": "efectivo p2",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 79,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 105000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 85,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 40340,
+    "fechaPagoOriginal": "46031",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 88,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 53418,
+    "fechaPagoOriginal": "46031",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 112,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 135000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 124,
+    "supplierNombreSistema": "La serenisima",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 58178,
+    "fechaPagoOriginal": "46037",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 125,
+    "supplierNombreSistema": "La serenisima",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 126852,
+    "fechaPagoOriginal": "46037",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 138,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 324000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 150,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 126866,
+    "fechaPagoOriginal": "46038",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 164,
+    "supplierNombreSistema": "La abejita feliz",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 153900,
+    "fechaPagoOriginal": "efectivo",
+    "formaPagoOriginal": "46036",
+    "errors": [
+      "fechaPago es obligatoria cuando montoPagado > 0",
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 181,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 318000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 199,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 92410,
+    "fechaPagoOriginal": "46038",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 225,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 138000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 228,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 60910,
+    "fechaPagoOriginal": "46038",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 245,
+    "supplierNombreSistema": "Pollo",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 148500,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 246,
+    "supplierNombreSistema": "Balducci (paltas)",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 70000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 268,
+    "supplierNombreSistema": "Nini",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 1282288,
+    "fechaPagoOriginal": "46041",
+    "formaPagoOriginal": "BBVA crédito",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 275,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 117984,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 276,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 13840,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 333,
+    "supplierNombreSistema": "Distribuidora vegana",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 144293,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 349,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 77030,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 351,
+    "supplierNombreSistema": "Conurbano sa",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 41671,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 353,
+    "supplierNombreSistema": "Fast market",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 15900,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 354,
+    "supplierNombreSistema": "Papelera san martin",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 77000,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 356,
+    "supplierNombreSistema": "Verduleria",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 151950,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 358,
+    "supplierNombreSistema": "Dietetica cientifica",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 9284,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 359,
+    "supplierNombreSistema": "Dietetica cientifica",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 48346,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 360,
+    "supplierNombreSistema": "Byparalelas",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 11000,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 363,
+    "supplierNombreSistema": "Cometa",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 20000,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 366,
+    "supplierNombreSistema": "Dietetica cientifica",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 5358,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 367,
+    "supplierNombreSistema": "Dietetica cientifica",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 41628,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 369,
+    "supplierNombreSistema": "Conurbano sa",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 48919,
+    "fechaPagoOriginal": "46044",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 372,
+    "supplierNombreSistema": "Verduleria",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 206440,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 373,
+    "supplierNombreSistema": "Nahuel Vidal",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 9466,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 374,
+    "supplierNombreSistema": "El ceibo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 53886,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 375,
+    "supplierNombreSistema": "Giraflor",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 15000,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 379,
+    "supplierNombreSistema": "Nahuel Vidal",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 119898,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 381,
+    "supplierNombreSistema": "Panacity",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 148950,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 382,
+    "supplierNombreSistema": "Vento fit ENVIO",
+    "sucursalNombre": "Todas",
+    "montoPagado": 38720,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 383,
+    "supplierNombreSistema": "Cometa",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 20000,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 384,
+    "supplierNombreSistema": "Cometa",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 20000,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 387,
+    "supplierNombreSistema": "Fast market",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 19708,
+    "fechaPagoOriginal": "46046",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 391,
+    "supplierNombreSistema": "Omega",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 33000,
+    "fechaPagoOriginal": "46046",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 392,
+    "supplierNombreSistema": "El ceibo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 122691,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 395,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 101270,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 397,
+    "supplierNombreSistema": "Giraflor",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 15000,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 401,
+    "supplierNombreSistema": "Omega",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 22000,
+    "fechaPagoOriginal": "46046",
+    "formaPagoOriginal": "efecitivo",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 425,
+    "supplierNombreSistema": "Polibol",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 220012,
+    "fechaPagoOriginal": "46048",
+    "formaPagoOriginal": "mp",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 429,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 270364,
+    "fechaPagoOriginal": "46052",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 430,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 10640,
+    "fechaPagoOriginal": "46052",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 469,
+    "supplierNombreSistema": "Reynaldo (La francia)",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 158080,
+    "fechaPagoOriginal": "46051",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 482,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 169086,
+    "fechaPagoOriginal": "46052",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 512,
+    "supplierNombreSistema": "Casalta (Porta hermanos)",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 146468,
+    "fechaPagoOriginal": "46028",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 518,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 201726,
+    "fechaPagoOriginal": "46052",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 540,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 147084,
+    "fechaPagoOriginal": "46059",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 548,
+    "supplierNombreSistema": "Balducci (paltas)",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 52000,
+    "fechaPagoOriginal": "46076",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 561,
+    "supplierNombreSistema": "Pranamar",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 211841,
+    "fechaPagoOriginal": "46052",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 572,
+    "supplierNombreSistema": "Papel parafinado",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 50300,
+    "fechaPagoOriginal": "46037",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 573,
+    "supplierNombreSistema": "Papel parafinado",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 100600,
+    "fechaPagoOriginal": "46045",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 589,
+    "supplierNombreSistema": "Giraflor",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 15000,
+    "fechaPagoOriginal": "46058",
+    "formaPagoOriginal": "c",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 593,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 76836,
+    "fechaPagoOriginal": "46059",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 598,
+    "supplierNombreSistema": "La vaca yogui",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 138180,
+    "fechaPagoOriginal": "46059",
+    "formaPagoOriginal": "Deposito+MP Maru",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 620,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 295980,
+    "fechaPagoOriginal": "46059",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 677,
+    "supplierNombreSistema": "Granix",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 75362,
+    "fechaPagoOriginal": "46064",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 686,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 167782,
+    "fechaPagoOriginal": "46066",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 726,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 102462,
+    "fechaPagoOriginal": "46066",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 745,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 156613,
+    "fechaPagoOriginal": "46066",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 749,
+    "supplierNombreSistema": "Logica natural felices lv",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 223953,
+    "fechaPagoOriginal": "46073",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 791,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 153558,
+    "fechaPagoOriginal": "46073",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 830,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 60005,
+    "fechaPagoOriginal": "46073",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 864,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 201610,
+    "fechaPagoOriginal": "46073",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 868,
+    "supplierNombreSistema": "Papelera El Vasquito",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 775178,
+    "fechaPagoOriginal": "46073",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 895,
+    "supplierNombreSistema": "Distribuidora JM",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 204802,
+    "fechaPagoOriginal": "46078",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 897,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 59",
+    "montoPagado": 199500,
+    "fechaPagoOriginal": "46080",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 907,
+    "supplierNombreSistema": "Distribuidora JM",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 83983,
+    "fechaPagoOriginal": "46078",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 917,
+    "supplierNombreSistema": "Distribuidora JM",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 164135,
+    "fechaPagoOriginal": "46078",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 946,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 50",
+    "montoPagado": 85520,
+    "fechaPagoOriginal": "46080",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 983,
+    "supplierNombreSistema": "Kyo",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 285340,
+    "fechaPagoOriginal": "46080",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 1001,
+    "supplierNombreSistema": "Papel parafinado",
+    "sucursalNombre": "Cocina",
+    "montoPagado": 100600,
+    "fechaPagoOriginal": "46073",
+    "formaPagoOriginal": "MP",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  },
+  {
+    "rowNumber": 1046,
+    "supplierNombreSistema": "Suqua Fitness",
+    "sucursalNombre": "Calle 13",
+    "montoPagado": 326655,
+    "fechaPagoOriginal": "46059",
+    "formaPagoOriginal": "MP Maru",
+    "errors": [
+      "formaPago es obligatoria cuando montoPagado > 0"
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "file": "pagos_import.xlsx",
+  "sheet": "Hoja1",
+  "totalRows": 1115,
+  "headers": [
+    "idFactura",
+    "supplierNombreSistema",
+    "sucursalNombre",
+    "fechaRemito",
+    "fechaRecepcion",
+    "tipoDocumento",
+    "tipoGasto",
+    "descripcion",
+    "montoTotal",
+    "montoPagado",
+    "fechaPago",
+    "formaPago",
+    "noReclama",
+    "estado"
+  ],
+  "missingRequiredHeaders": [],
+  "unknownHeaders": [],
+  "resumen": {
+    "pagosIncompletos": 0,
+    "proveedoresNoEncontrados": 0,
+    "sucursalesNoEncontradas": 0,
+    "listoParaImportar": true
+  },
+  "pagosIncompletos": [],
+  "proveedoresNoEncontrados": [],
+  "sucursalesNoEncontradas": []
+}
