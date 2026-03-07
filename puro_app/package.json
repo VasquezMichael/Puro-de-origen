@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "import:suppliers": "node scripts/import-suppliers.js",
-    "import:payments": "node scripts/import-payments.js"
+    "import:payments": "node scripts/import-payments.js",
+    "check:payments": "node scripts/check-payments-import.js",
+    "report:payments:invalid": "node scripts/report-payments-invalid-rows.js"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",

@@ -1,0 +1,1376 @@
+{
+  "file": "pagos_import.xlsx",
+  "sheet": "Hoja1",
+  "totalRows": 1126,
+  "headers": [
+    "idFactura",
+    "supplierNombreSistema",
+    "sucursalNombre",
+    "fechaRemito",
+    "fechaRecepcion",
+    "tipoDocumento",
+    "tipoGasto",
+    "descripcion",
+    "montoTotal",
+    "montoPagado",
+    "fechaPago",
+    "formaPago",
+    "noReclama",
+    "estado"
+  ],
+  "missingRequiredHeaders": [],
+  "unknownHeaders": [],
+  "resumen": {
+    "pagosIncompletos": 0,
+    "proveedoresNoEncontrados": 76,
+    "sucursalesNoEncontradas": 1,
+    "listoParaImportar": false
+  },
+  "pagosIncompletos": [],
+  "proveedoresNoEncontrados": [
+    {
+      "proveedor": "Aldea ecologica",
+      "filas": [
+        42,
+        57,
+        58,
+        68,
+        124,
+        173,
+        178,
+        304,
+        334,
+        457,
+        466,
+        474,
+        519,
+        564,
+        573,
+        588,
+        705,
+        717,
+        724,
+        819,
+        827,
+        858,
+        864,
+        922,
+        937,
+        943,
+        1078,
+        1106,
+        1119
+      ],
+      "cantidadApariciones": 29
+    },
+    {
+      "proveedor": "An-dell (Tregar)",
+      "filas": [
+        297,
+        298,
+        333,
+        369,
+        431,
+        432,
+        458,
+        490,
+        491,
+        559,
+        589,
+        619,
+        672,
+        722,
+        743,
+        744,
+        796,
+        863,
+        916,
+        944,
+        972,
+        1070,
+        1091,
+        1108
+      ],
+      "cantidadApariciones": 24
+    },
+    {
+      "proveedor": "Arcor",
+      "filas": [
+        14,
+        26,
+        263,
+        265,
+        266,
+        669,
+        778,
+        784,
+        793,
+        802,
+        803,
+        812,
+        1016,
+        1017,
+        1029,
+        1037
+      ],
+      "cantidadApariciones": 16
+    },
+    {
+      "proveedor": "Balducci (paltas)",
+      "filas": [
+        250,
+        553,
+        677
+      ],
+      "cantidadApariciones": 3
+    },
+    {
+      "proveedor": "Be keto",
+      "filas": [
+        617,
+        989
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Be keto envío",
+      "filas": [
+        990
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Byparalelas",
+      "filas": [
+        29,
+        65,
+        94,
+        120,
+        133,
+        174,
+        186,
+        211,
+        277,
+        344,
+        349,
+        364,
+        445,
+        788,
+        875,
+        887,
+        947,
+        959,
+        965,
+        1030,
+        1093,
+        1115
+      ],
+      "cantidadApariciones": 22
+    },
+    {
+      "proveedor": "Campagna Sebastian Pablo",
+      "filas": [
+        580
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Carne",
+      "filas": [
+        16,
+        45,
+        64,
+        82,
+        112,
+        176,
+        226,
+        246,
+        291,
+        374,
+        410,
+        424,
+        464,
+        501,
+        554,
+        576,
+        598,
+        633,
+        658,
+        671,
+        718,
+        738,
+        810,
+        813,
+        835,
+        879,
+        952,
+        1014,
+        1067,
+        1101,
+        1126
+      ],
+      "cantidadApariciones": 31
+    },
+    {
+      "proveedor": "Casalta (Porta hermanos)",
+      "filas": [
+        2,
+        517
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Casalta (Porta hermanos) Envio",
+      "filas": [
+        516
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Cesar panes",
+      "filas": [
+        248,
+        356,
+        463,
+        512,
+        675,
+        774,
+        911,
+        1072
+      ],
+      "cantidadApariciones": 8
+    },
+    {
+      "proveedor": "Chocolate Colonial",
+      "filas": [
+        883
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Chopped",
+      "filas": [
+        147,
+        281,
+        282,
+        308,
+        442,
+        443,
+        449,
+        539,
+        540,
+        562,
+        690,
+        691,
+        703,
+        899,
+        900,
+        926,
+        1050,
+        1051,
+        1061
+      ],
+      "cantidadApariciones": 19
+    },
+    {
+      "proveedor": "City pack",
+      "filas": [
+        549,
+        550,
+        684,
+        1007,
+        1008,
+        1009,
+        1010
+      ],
+      "cantidadApariciones": 7
+    },
+    {
+      "proveedor": "Coca cola",
+      "filas": [
+        85,
+        230,
+        348,
+        731,
+        956,
+        1118
+      ],
+      "cantidadApariciones": 6
+    },
+    {
+      "proveedor": "Conexiion",
+      "filas": [
+        318,
+        319,
+        320,
+        321,
+        322,
+        497,
+        686,
+        687,
+        688,
+        779,
+        780,
+        781,
+        983,
+        995
+      ],
+      "cantidadApariciones": 14
+    },
+    {
+      "proveedor": "De raiz",
+      "filas": [
+        997
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Dietetica cientifica",
+      "filas": [
+        71,
+        72,
+        207,
+        208,
+        209,
+        210,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        232,
+        233,
+        346,
+        347,
+        362,
+        363,
+        370,
+        371,
+        485,
+        732,
+        733,
+        739,
+        740,
+        747,
+        748,
+        847,
+        848,
+        870,
+        871,
+        962,
+        963,
+        971,
+        1103,
+        1104,
+        1109,
+        1110
+      ],
+      "cantidadApariciones": 39
+    },
+    {
+      "proveedor": "Distek (limpieza)",
+      "filas": [
+        53,
+        67,
+        768,
+        892
+      ],
+      "cantidadApariciones": 4
+    },
+    {
+      "proveedor": "Distribuidora basile",
+      "filas": [
+        128,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        290,
+        295,
+        296,
+        302,
+        303,
+        426,
+        427,
+        437,
+        438,
+        439,
+        451,
+        537,
+        555,
+        560,
+        676,
+        689,
+        708,
+        794,
+        806,
+        811,
+        893,
+        912,
+        932,
+        1038,
+        1053,
+        1069
+      ],
+      "cantidadApariciones": 33
+    },
+    {
+      "proveedor": "Distribuidora franca",
+      "filas": [
+        350,
+        569
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Distribuidora JM",
+      "filas": [
+        121,
+        131,
+        134,
+        529,
+        530,
+        535,
+        655,
+        661,
+        670,
+        903,
+        915,
+        925,
+        1052,
+        1066,
+        1075
+      ],
+      "cantidadApariciones": 15
+    },
+    {
+      "proveedor": "Distribuidora los hermanos",
+      "filas": [
+        75,
+        76,
+        149,
+        150,
+        157,
+        541,
+        542,
+        595,
+        692,
+        693,
+        726,
+        798,
+        804,
+        894,
+        895,
+        951,
+        1039,
+        1040,
+        1085
+      ],
+      "cantidadApariciones": 19
+    },
+    {
+      "proveedor": "Distribuidora vegana",
+      "filas": [
+        153,
+        337,
+        455,
+        593,
+        940
+      ],
+      "cantidadApariciones": 5
+    },
+    {
+      "proveedor": "Distrinat",
+      "filas": [
+        105,
+        106,
+        107,
+        108,
+        696,
+        697,
+        698,
+        699,
+        700,
+        969,
+        970
+      ],
+      "cantidadApariciones": 11
+    },
+    {
+      "proveedor": "El ceibo",
+      "filas": [
+        199,
+        240,
+        258,
+        378,
+        396,
+        493,
+        508,
+        520,
+        754,
+        767,
+        775
+      ],
+      "cantidadApariciones": 11
+    },
+    {
+      "proveedor": "EmeBe",
+      "filas": [
+        187,
+        866,
+        886,
+        1054
+      ],
+      "cantidadApariciones": 4
+    },
+    {
+      "proveedor": "Estancia los naranjos",
+      "filas": [
+        47,
+        182,
+        351,
+        1125
+      ],
+      "cantidadApariciones": 4
+    },
+    {
+      "proveedor": "Farmacia",
+      "filas": [
+        184
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Fast market",
+      "filas": [
+        261,
+        357,
+        391,
+        513,
+        552,
+        603,
+        634,
+        637,
+        644,
+        645,
+        657,
+        683,
+        770,
+        836,
+        1003,
+        1116
+      ],
+      "cantidadApariciones": 16
+    },
+    {
+      "proveedor": "Genaves",
+      "filas": [
+        102,
+        204,
+        398,
+        495,
+        506,
+        521,
+        622,
+        629,
+        635,
+        759,
+        771,
+        993
+      ],
+      "cantidadApariciones": 12
+    },
+    {
+      "proveedor": "Giraflor",
+      "filas": [
+        115,
+        116,
+        379,
+        401,
+        505,
+        597,
+        614,
+        825,
+        826,
+        859,
+        977,
+        981,
+        1124
+      ],
+      "cantidadApariciones": 13
+    },
+    {
+      "proveedor": "grafica",
+      "filas": [
+        236
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Guantes nitrilo",
+      "filas": [
+        579
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Gula keto",
+      "filas": [
+        289,
+        294,
+        301,
+        570,
+        582,
+        592,
+        656,
+        660,
+        702,
+        897,
+        914,
+        924,
+        1077,
+        1088,
+        1099
+      ],
+      "cantidadApariciones": 15
+    },
+    {
+      "proveedor": "impresion",
+      "filas": [
+        17
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Kay",
+      "filas": [
+        30,
+        44,
+        216,
+        444,
+        448,
+        610,
+        620,
+        741,
+        898,
+        928
+      ],
+      "cantidadApariciones": 10
+    },
+    {
+      "proveedor": "Kein",
+      "filas": [
+        312,
+        336,
+        340,
+        612
+      ],
+      "cantidadApariciones": 4
+    },
+    {
+      "proveedor": "La Delfina lacteos",
+      "filas": [
+        77,
+        368,
+        481,
+        745,
+        1111
+      ],
+      "cantidadApariciones": 5
+    },
+    {
+      "proveedor": "Leche (cocina)",
+      "filas": [
+        599,
+        918
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Libreria",
+      "filas": [
+        18
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Logica natural felices lv",
+      "filas": [
+        51,
+        285,
+        306,
+        446,
+        561,
+        710,
+        757,
+        904,
+        927,
+        1064
+      ],
+      "cantidadApariciones": 10
+    },
+    {
+      "proveedor": "lonas",
+      "filas": [
+        55
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Nahuel Vidal",
+      "filas": [
+        15,
+        21,
+        27,
+        92,
+        100,
+        111,
+        192,
+        244,
+        257,
+        377,
+        383,
+        403,
+        498,
+        509,
+        518,
+        751,
+        760,
+        773,
+        820,
+        853,
+        855,
+        873,
+        976,
+        980,
+        991
+      ],
+      "cantidadApariciones": 25
+    },
+    {
+      "proveedor": "Natural House",
+      "filas": [
+        494,
+        982
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Nini",
+      "filas": [
+        272,
+        755,
+        756
+      ],
+      "cantidadApariciones": 3
+    },
+    {
+      "proveedor": "Nueva era",
+      "filas": [
+        24,
+        88,
+        103,
+        104,
+        110,
+        197,
+        198,
+        242,
+        251,
+        380,
+        382,
+        397,
+        500,
+        507,
+        522,
+        624,
+        631,
+        632,
+        636,
+        758,
+        763,
+        772,
+        837,
+        842,
+        843,
+        868,
+        975,
+        986,
+        998
+      ],
+      "cantidadApariciones": 29
+    },
+    {
+      "proveedor": "Omega",
+      "filas": [
+        28,
+        260,
+        264,
+        395,
+        405,
+        640,
+        642,
+        777
+      ],
+      "cantidadApariciones": 8
+    },
+    {
+      "proveedor": "Otto",
+      "filas": [
+        546,
+        548
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Palluzzi (Don elias)",
+      "filas": [
+        343,
+        475,
+        623,
+        630
+      ],
+      "cantidadApariciones": 4
+    },
+    {
+      "proveedor": "Panadería La Esmeralda",
+      "filas": [
+        681,
+        682,
+        1004
+      ],
+      "cantidadApariciones": 3
+    },
+    {
+      "proveedor": "Papel parafinado",
+      "filas": [
+        578,
+        581,
+        1012
+      ],
+      "cantidadApariciones": 3
+    },
+    {
+      "proveedor": "Papelera El Vasquito",
+      "filas": [
+        547,
+        876
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Papelera san martin",
+      "filas": [
+        181,
+        358
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Polibol",
+      "filas": [
+        429,
+        609
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Pollo",
+      "filas": [
+        10,
+        22,
+        32,
+        49,
+        69,
+        81,
+        114,
+        140,
+        183,
+        228,
+        249,
+        270,
+        292,
+        326,
+        359,
+        375,
+        409,
+        425,
+        468,
+        484,
+        502,
+        531,
+        556,
+        571,
+        600,
+        638,
+        643,
+        659,
+        679,
+        712,
+        736,
+        809,
+        831,
+        839,
+        856,
+        878,
+        919,
+        938,
+        953,
+        979,
+        1001,
+        1013,
+        1073,
+        1100,
+        1117
+      ],
+      "cantidadApariciones": 45
+    },
+    {
+      "proveedor": "Pranamar",
+      "filas": [
+        566
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "pranamar envío",
+      "filas": [
+        567
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Quem (fruta cong)",
+      "filas": [
+        136,
+        654
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Rama srl",
+      "filas": [
+        647,
+        648,
+        649,
+        650,
+        651,
+        652
+      ],
+      "cantidadApariciones": 6
+    },
+    {
+      "proveedor": "Rasta alfajores",
+      "filas": [
+        158,
+        171,
+        611,
+        618,
+        714,
+        966,
+        1063,
+        1071
+      ],
+      "cantidadApariciones": 8
+    },
+    {
+      "proveedor": "Reynaldo (La francia)",
+      "filas": [
+        36,
+        54,
+        66,
+        159,
+        167,
+        175,
+        324,
+        329,
+        341,
+        461,
+        462,
+        473,
+        602,
+        607,
+        626,
+        958,
+        968,
+        973,
+        1076,
+        1092,
+        1098
+      ],
+      "cantidadApariciones": 21
+    },
+    {
+      "proveedor": "Supermercado",
+      "filas": [
+        46,
+        118
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Suqua Fitness",
+      "filas": [
+        1057
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Ursula panes",
+      "filas": [
+        95,
+        193,
+        194,
+        195,
+        278,
+        293
+      ],
+      "cantidadApariciones": 6
+    },
+    {
+      "proveedor": "Varios cocina",
+      "filas": [
+        1011
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Vento fit",
+      "filas": [
+        389,
+        845
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Vento fit ENVIO",
+      "filas": [
+        386,
+        844
+      ],
+      "cantidadApariciones": 2
+    },
+    {
+      "proveedor": "Verduleria",
+      "filas": [
+        19,
+        23,
+        31,
+        33,
+        50,
+        70,
+        80,
+        109,
+        119,
+        132,
+        137,
+        177,
+        229,
+        247,
+        262,
+        271,
+        300,
+        325,
+        360,
+        376,
+        392,
+        411,
+        430,
+        470,
+        483,
+        503,
+        514,
+        532,
+        551,
+        568,
+        596,
+        639,
+        646,
+        664,
+        678,
+        713,
+        737,
+        769,
+        814,
+        832,
+        840,
+        857,
+        877,
+        920,
+        939,
+        961,
+        978,
+        1002,
+        1005,
+        1015,
+        1074,
+        1094,
+        1127
+      ],
+      "cantidadApariciones": 53
+    },
+    {
+      "proveedor": "Via falcone",
+      "filas": [
+        129,
+        148,
+        283,
+        441,
+        695,
+        704,
+        896,
+        921,
+        1047,
+        1058
+      ],
+      "cantidadApariciones": 10
+    },
+    {
+      "proveedor": "Vinagres",
+      "filas": [
+        577
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Virar SRL (Barlovento)",
+      "filas": [
+        653
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "VMP",
+      "filas": [
+        366
+      ],
+      "cantidadApariciones": 1
+    },
+    {
+      "proveedor": "Wilde (lefit)",
+      "filas": [
+        238,
+        402,
+        752,
+        765,
+        766,
+        985
+      ],
+      "cantidadApariciones": 6
+    },
+    {
+      "proveedor": "Woods",
+      "filas": [
+        345,
+        948
+      ],
+      "cantidadApariciones": 2
+    }
+  ],
+  "sucursalesNoEncontradas": [
+    {
+      "sucursal": "cocina",
+      "filas": [
+        2,
+        10,
+        16,
+        19,
+        22,
+        23,
+        31,
+        32,
+        33,
+        45,
+        49,
+        50,
+        64,
+        69,
+        70,
+        80,
+        81,
+        82,
+        109,
+        112,
+        114,
+        115,
+        118,
+        119,
+        132,
+        137,
+        140,
+        176,
+        177,
+        183,
+        226,
+        228,
+        229,
+        246,
+        247,
+        248,
+        249,
+        250,
+        261,
+        262,
+        270,
+        271,
+        272,
+        292,
+        300,
+        325,
+        326,
+        350,
+        356,
+        357,
+        358,
+        359,
+        360,
+        374,
+        375,
+        376,
+        391,
+        392,
+        409,
+        410,
+        411,
+        424,
+        425,
+        429,
+        430,
+        463,
+        464,
+        468,
+        483,
+        484,
+        501,
+        502,
+        503,
+        512,
+        513,
+        514,
+        531,
+        532,
+        546,
+        547,
+        548,
+        549,
+        551,
+        552,
+        553,
+        554,
+        556,
+        568,
+        569,
+        571,
+        576,
+        577,
+        578,
+        579,
+        580,
+        581,
+        596,
+        598,
+        599,
+        600,
+        603,
+        633,
+        634,
+        638,
+        639,
+        643,
+        644,
+        645,
+        646,
+        647,
+        648,
+        649,
+        650,
+        651,
+        652,
+        653,
+        657,
+        658,
+        659,
+        662,
+        663,
+        664,
+        675,
+        677,
+        678,
+        679,
+        681,
+        682,
+        683,
+        684,
+        712,
+        713,
+        718,
+        736,
+        737,
+        738,
+        769,
+        770,
+        774,
+        809,
+        810,
+        813,
+        814,
+        820,
+        826,
+        831,
+        832,
+        835,
+        836,
+        839,
+        840,
+        841,
+        856,
+        857,
+        876,
+        877,
+        878,
+        879,
+        911,
+        918,
+        919,
+        920,
+        938,
+        939,
+        952,
+        953,
+        961,
+        978,
+        979,
+        1001,
+        1002,
+        1003,
+        1004,
+        1005,
+        1007,
+        1008,
+        1009,
+        1010,
+        1011,
+        1012,
+        1013,
+        1014,
+        1015,
+        1067,
+        1072,
+        1073,
+        1074,
+        1094,
+        1100,
+        1101,
+        1116,
+        1117,
+        1124,
+        1126,
+        1127
+      ],
+      "cantidadApariciones": 195
+    }
+  ]
+}

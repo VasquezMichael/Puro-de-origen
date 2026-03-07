@@ -1,0 +1,41 @@
+{
+  "file": "pagos_import.xlsx",
+  "sheet": "Hoja1",
+  "totalRows": 1115,
+  "headers": [
+    "idFactura",
+    "supplierNombreSistema",
+    "sucursalNombre",
+    "fechaRemito",
+    "fechaRecepcion",
+    "tipoDocumento",
+    "tipoGasto",
+    "descripcion",
+    "montoTotal",
+    "montoPagado",
+    "fechaPago",
+    "formaPago",
+    "noReclama",
+    "estado"
+  ],
+  "missingRequiredHeaders": [],
+  "unknownHeaders": [],
+  "resumen": {
+    "pagosIncompletos": 0,
+    "proveedoresNoEncontrados": 1,
+    "sucursalesNoEncontradas": 0,
+    "listoParaImportar": false
+  },
+  "pagosIncompletos": [],
+  "proveedoresNoEncontrados": [
+    {
+      "proveedor": "Leche (Cocina)",
+      "filas": [
+        591,
+        910
+      ],
+      "cantidadApariciones": 2
+    }
+  ],
+  "sucursalesNoEncontradas": []
+}
