@@ -1,12 +1,15 @@
 // Script para inicializar las sucursales por defecto
-// Ejecutar con: MONGODB_URI="tu_mongodb_uri_completo" node scripts/init-sucursales.js
+// Ejecutar con MONGODB_URI configurada en el entorno.
 
 const mongoose = require("mongoose");
 
 // Configuración de conexión
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://vasquezmichael:Qjvj9Mkn9wlCb8aq@cluster0.hurtvqb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error("Error: la variable de entorno MONGODB_URI es obligatoria.");
+  process.exit(1);
+}
 
 // Schema de Sucursal
 const SucursalSchema = new mongoose.Schema({
