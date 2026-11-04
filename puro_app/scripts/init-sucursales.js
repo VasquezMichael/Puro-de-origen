@@ -3,14 +3,6 @@
 
 const mongoose = require("mongoose");
 
-// Configuración de conexión
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  console.error("Error: la variable de entorno MONGODB_URI es obligatoria.");
-  process.exit(1);
-}
-
 // Schema de Sucursal
 const SucursalSchema = new mongoose.Schema({
   nombre: {
@@ -60,45 +52,90 @@ const sucursalesDefault = [
   },
 ];
 
-async function initSucursales() {
-  try {
-    console.log("🔌 Conectando a MongoDB...");
-    await mongoose.connect(MONGODB_URI);
-    console.log("✅ Conectado a MongoDB");
+async function initSucursales({
+  mongoUri = process.env.MONGODB_URI,
+  mongooseClient = mongoose,
+  SucursalModel = Sucursal,
+  logger = console,
+} = {}) {
+  if (!mongoUri) {
+    throw new Error("La variable de entorno MONGODB_URI es obligatoria.");
+  }
 
-    console.log("🏢 Inicializando sucursales...");
+  let connectionAttempted = false;
+  let initializationError;
+
+  try {
+    logger.log("🔌 Conectando a MongoDB...");
+    connectionAttempted = true;
+    await mongooseClient.connect(mongoUri);
+    logger.log("✅ Conectado a MongoDB");
+
+    logger.log("🏢 Inicializando sucursales...");
 
     for (const sucursalData of sucursalesDefault) {
-      const existingSucursal = await Sucursal.findOne({
+      const existingSucursal = await SucursalModel.findOne({
         nombre: sucursalData.nombre,
       });
 
       if (!existingSucursal) {
-        const sucursal = await Sucursal.create(sucursalData);
-        console.log(`✅ Sucursal creada: ${sucursal.nombre}`);
+        const sucursal = await SucursalModel.create(sucursalData);
+        logger.log(`✅ Sucursal creada: ${sucursal.nombre}`);
       } else {
-        console.log(`ℹ️  Sucursal ya existe: ${sucursalData.nombre}`);
+        logger.log(`ℹ️  Sucursal ya existe: ${sucursalData.nombre}`);
       }
     }
 
-    console.log("🎉 Inicialización de sucursales completada");
+    logger.log("🎉 Inicialización de sucursales completada");
 
     // Mostrar todas las sucursales
-    const allSucursales = await Sucursal.find({});
-    console.log("\n📋 Sucursales en la base de datos:");
+    const allSucursales = await SucursalModel.find({});
+    logger.log("\n📋 Sucursales en la base de datos:");
     allSucursales.forEach((sucursal) => {
-      console.log(
+      logger.log(
         `  - ${sucursal.nombre} (${sucursal.activa ? "Activa" : "Inactiva"})`
       );
     });
   } catch (error) {
-    console.error("💥 Error:", error);
+    initializationError = error;
+    throw error;
   } finally {
-    await mongoose.disconnect();
-    console.log("🔌 Desconectado de MongoDB");
-    process.exit(0);
+    if (connectionAttempted) {
+      try {
+        await mongooseClient.disconnect();
+        logger.log("🔌 Desconectado de MongoDB");
+      } catch (disconnectError) {
+        if (initializationError) {
+          throw new AggregateError(
+            [initializationError, disconnectError],
+            "Fallaron la inicialización y la desconexión de MongoDB."
+          );
+        }
+        throw disconnectError;
+      }
+    }
   }
 }
 
-// Ejecutar el script
-initSucursales();
+async function run(options = {}) {
+  const logger = options.logger || console;
+
+  try {
+    await initSucursales(options);
+    return 0;
+  } catch (error) {
+    logger.error(
+      "💥 Error al inicializar sucursales:",
+      error instanceof Error ? error.message : "Error desconocido"
+    );
+    return 1;
+  }
+}
+
+if (require.main === module) {
+  run().then((exitCode) => {
+    process.exitCode = exitCode;
+  });
+}
+
+module.exports = { initSucursales, run };
