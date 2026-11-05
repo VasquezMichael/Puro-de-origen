@@ -970,7 +970,7 @@ export function PaymentsTab({
                                   <li>${payment.montoPagado.toLocaleString()} en pagos realizados</li>
                                 </ul>
                                 <br />
-                                La factura volverá al estado "Pendiente" con el monto total como saldo pendiente.
+                                La factura volverá al estado &quot;Pendiente&quot; con el monto total como saldo pendiente.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -1030,7 +1030,7 @@ export function PaymentsTab({
             <div className="text-center py-8">
               <p className="text-gray-500">No se encontraron facturas</p>
               {payments.length === 0 && (
-                <p className="text-sm text-gray-400 mt-2">Haz clic en "Nueva Factura" para comenzar</p>
+                <p className="text-sm text-gray-400 mt-2">Haz clic en &quot;Nueva Factura&quot; para comenzar</p>
               )}
             </div>
           )}

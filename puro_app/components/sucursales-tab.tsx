@@ -29,6 +29,11 @@ interface SucursalesTabProps {
   onDataChange?: () => void
 }
 
+interface SucursalInitializationResult {
+  action: "created" | "existing"
+  sucursal: string
+}
+
 export function SucursalesTab({ sucursales, setSucursales, onDataChange }: SucursalesTabProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingSucursal, setEditingSucursal] = useState<Sucursal | null>(null)
@@ -169,7 +174,7 @@ export function SucursalesTab({ sucursales, setSucursales, onDataChange }: Sucur
         })
 
         if (response.ok) {
-          const data = await response.json()
+          const data: { results: SucursalInitializationResult[] } = await response.json()
           console.log("✅ Sucursales inicializadas:", data)
           alert(
             `Inicialización completada:\n${data.results.map((r) => `${r.action === "created" ? "✅ Creada" : "ℹ️ Ya existía"}: ${r.sucursal}`).join("\n")}`,
@@ -354,7 +359,7 @@ export function SucursalesTab({ sucursales, setSucursales, onDataChange }: Sucur
           <CardContent className="text-center py-8">
             <p className="text-gray-500">No se encontraron sucursales</p>
             {sucursales.length === 0 && (
-              <p className="text-sm text-gray-400 mt-2">Haz clic en "Nueva Sucursal" para comenzar</p>
+              <p className="text-sm text-gray-400 mt-2">Haz clic en &quot;Nueva Sucursal&quot; para comenzar</p>
             )}
           </CardContent>
         </Card>
