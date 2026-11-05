@@ -340,7 +340,7 @@ export default function Dashboard() {
                     <DollarSign className="h-5 w-5 text-orange-500" />
                     Pagos Pendientes
                   </CardTitle>
-                  <CardDescription>Facturas con saldo pendiente de pago (excluye "no reclama")</CardDescription>
+                  <CardDescription>Facturas con saldo pendiente de pago (excluye &quot;no reclama&quot;)</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">

@@ -139,7 +139,7 @@ export function HistoryTab({ payments }: HistoryTabProps) {
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">${totalPending.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Excluye facturas marcadas como "no reclama"
+              Excluye facturas marcadas como &quot;no reclama&quot;
             </p>
           </CardContent>
         </Card>

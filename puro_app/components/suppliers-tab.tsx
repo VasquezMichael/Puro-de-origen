@@ -502,7 +502,7 @@ export function SuppliersTab({ suppliers, setSuppliers, onDataChange }: Supplier
         <Card>
           <CardContent className="text-center py-8">
             <p className="text-gray-500">No se encontraron proveedores</p>
-            {suppliers.length === 0 && <p className="text-sm text-gray-400 mt-2">Haz clic en "Nuevo Proveedor" para comenzar</p>}
+            {suppliers.length === 0 && <p className="text-sm text-gray-400 mt-2">Haz clic en &quot;Nuevo Proveedor&quot; para comenzar</p>}
           </CardContent>
         </Card>
       )}
