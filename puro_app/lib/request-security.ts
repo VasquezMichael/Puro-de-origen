@@ -65,7 +65,16 @@ export function enforceSameOrigin(request: NextRequest): NextResponse | null {
 
   try {
     const originUrl = origin ? new URL(origin) : null
-    if (!originUrl || !configuredOrigins.includes(originUrl.origin)) {
+    const netlifySiteName = process.env.SITE_NAME?.toLowerCase()
+    const isTrustedNetlifyPreview = Boolean(
+      originUrl &&
+      netlifySiteName &&
+      originUrl.protocol === "https:" &&
+      new RegExp(`^deploy-preview-\\d+--${netlifySiteName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\.netlify\\.app$`)
+        .test(originUrl.hostname.toLowerCase()),
+    )
+
+    if (!originUrl || (!configuredOrigins.includes(originUrl.origin) && !isTrustedNetlifyPreview)) {
       return forbiddenResponse("Invalid request origin")
     }
   } catch {

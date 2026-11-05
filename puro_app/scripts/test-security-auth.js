@@ -31,7 +31,9 @@ async function run() {
       ...process.env,
       JWT_SECRET: jwtSecret,
       MONGODB_URI: "mongodb://127.0.0.1:1/security-test",
-      URL: baseUrl,
+      APP_ORIGIN: baseUrl,
+      URL: "https://purodeorigen.netlify.app",
+      SITE_NAME: "purodeorigen",
       NODE_ENV: "development",
     },
     stdio: ["ignore", "pipe", "pipe"],
@@ -152,6 +154,12 @@ async function run() {
     assert.match(logoutCookie, /Path=\//i)
     assert.match(logoutCookie, /HttpOnly/i)
     assert.match(logoutCookie, /SameSite=strict/i)
+
+    response = await fetch(`${baseUrl}/api/auth/logout`, {
+      method: "POST",
+      headers: { Origin: "https://deploy-preview-8--purodeorigen.netlify.app" },
+    })
+    assert.equal(response.status, 200, "Netlify Deploy Preview origin is accepted from SITE_NAME")
 
     response = await fetch(`${baseUrl}/api/suppliers`, {
       headers: { Cookie: "auth-token=" },
