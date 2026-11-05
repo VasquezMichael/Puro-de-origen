@@ -1,41 +1,30 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { verifyAuthTokenFromEnv } from "@/lib/jwt"
 
-export function middleware(request: NextRequest) {
-  console.log("🛡️ Middleware executing for:", request.nextUrl.pathname)
+function loginRedirect(request: NextRequest): NextResponse {
+  const response = NextResponse.redirect(new URL("/login", request.url))
+  response.cookies.set("auth-token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 0,
+  })
+  return response
+}
 
-  // Protect dashboard routes
+export async function middleware(request: NextRequest) {
+  const token = request.cookies.get("auth-token")?.value
+  const payload = token ? await verifyAuthTokenFromEnv(token) : null
+  const authenticated = Boolean(payload)
+
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
-    const token = request.cookies.get("auth-token")?.value
-    console.log("🔍 Checking auth token:", token ? "exists" : "missing")
-
-    if (!token) {
-      console.log("❌ No token found, redirecting to login")
-      return NextResponse.redirect(new URL("/login", request.url))
-    }
-
-    // Simple token validation (you can make this more robust)
-    try {
-      // For now, just check if token exists
-      console.log("✅ Token found, allowing access to dashboard")
-      return NextResponse.next()
-    } catch (error) {
-      console.log("❌ Invalid token, redirecting to login")
-      return NextResponse.redirect(new URL("/login", request.url))
-    }
+    return authenticated ? NextResponse.next() : loginRedirect(request)
   }
 
-  // Redirect root to login if not authenticated
   if (request.nextUrl.pathname === "/") {
-    const token = request.cookies.get("auth-token")?.value
-
-    if (token) {
-      console.log("✅ User authenticated, redirecting to dashboard")
-      return NextResponse.redirect(new URL("/dashboard", request.url))
-    } else {
-      console.log("❌ User not authenticated, redirecting to login")
-      return NextResponse.redirect(new URL("/login", request.url))
-    }
+    return NextResponse.redirect(new URL(authenticated ? "/dashboard" : "/login", request.url))
   }
 
   return NextResponse.next()

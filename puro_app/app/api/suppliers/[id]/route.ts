@@ -1,8 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Supplier from "@/lib/models/Supplier"
+import { authenticateRequest, enforceSameOrigin } from "@/lib/request-security"
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     await dbConnect()
 
@@ -21,6 +27,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     await dbConnect()
 

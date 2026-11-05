@@ -3,6 +3,7 @@ import dbConnect from "@/lib/mongodb"
 import Payment from "@/lib/models/Payment"
 import Supplier from "@/lib/models/Supplier"
 import Sucursal from "@/lib/models/Sucursal"
+import { authenticateRequest, enforceSameOrigin } from "@/lib/request-security"
 
 async function getOrCreateGeneralSucursal() {
   let sucursal = await Sucursal.findOne({ nombre: "Todas" })
@@ -16,7 +17,10 @@ async function getOrCreateGeneralSucursal() {
   return sucursal
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+
   try {
     await dbConnect()
     const payments = await Payment.find({}).sort({ createdAt: -1 })
@@ -28,6 +32,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     await dbConnect()
 

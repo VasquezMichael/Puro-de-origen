@@ -2,8 +2,12 @@ import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import User from "@/lib/models/User"
 import { verifyPassword, generateToken } from "@/lib/auth"
+import { enforceSameOrigin } from "@/lib/request-security"
 
 export async function POST(request: NextRequest) {
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     console.log("🔐 Login attempt started")
     await dbConnect()
@@ -52,6 +56,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 

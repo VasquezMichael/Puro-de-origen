@@ -1,8 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Sucursal from "@/lib/models/Sucursal"
+import { authenticateRequest, enforceSameOrigin } from "@/lib/request-security"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+
   try {
     await dbConnect()
     const sucursales = await Sucursal.find({}).sort({ createdAt: -1 })
@@ -14,6 +18,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     await dbConnect()
 

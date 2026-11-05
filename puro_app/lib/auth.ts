@@ -19,14 +19,8 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-  console.log("🔍 Verifying password...")
-  console.log("Password length:", password.length)
-  console.log("Hash length:", hashedPassword.length)
-  console.log("Hash starts with:", hashedPassword.substring(0, 10))
-
   try {
     const isValid = await bcrypt.compare(password, hashedPassword)
-    console.log("🔍 Password verification result:", isValid)
     return isValid
   } catch (error) {
     console.error("💥 Password verification error:", error)
@@ -36,12 +30,12 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 
 export function generateToken(userId: string): string {
   console.log("🎫 Generating token for user:", userId)
-  return jwt.sign({ userId }, getJwtSecret(), { expiresIn: "7d" })
+  return jwt.sign({ userId }, getJwtSecret(), { algorithm: "HS256", expiresIn: "7d" })
 }
 
 export function verifyToken(token: string): { userId: string } | null {
   try {
-    return jwt.verify(token, getJwtSecret()) as { userId: string }
+    return jwt.verify(token, getJwtSecret(), { algorithms: ["HS256"] }) as { userId: string }
   } catch {
     return null
   }
