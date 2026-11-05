@@ -3,6 +3,7 @@ import dbConnect from "@/lib/mongodb"
 import Payment from "@/lib/models/Payment"
 import Supplier from "@/lib/models/Supplier"
 import Sucursal from "@/lib/models/Sucursal"
+import { authenticateRequest, enforceSameOrigin } from "@/lib/request-security"
 
 async function getOrCreateGeneralSucursal() {
   let sucursal = await Sucursal.findOne({ nombre: "Todas" })
@@ -17,6 +18,11 @@ async function getOrCreateGeneralSucursal() {
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     await dbConnect()
 
@@ -123,6 +129,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await authenticateRequest(request)
+  if (!auth.authenticated) return auth.response
+  const originError = enforceSameOrigin(request)
+  if (originError) return originError
+
   try {
     console.log("🗑️ Attempting to delete payment:", params.id)
     await dbConnect()
