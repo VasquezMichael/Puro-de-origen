@@ -4,6 +4,8 @@ export interface AuthTokenPayload {
   exp: number
 }
 
+export type UserExists = (userId: string) => Promise<boolean>
+
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
@@ -83,4 +85,13 @@ export async function verifyAuthToken(
 export async function verifyAuthTokenFromEnv(token: string): Promise<AuthTokenPayload | null> {
   const secret = process.env.JWT_SECRET
   return secret ? verifyAuthToken(token, secret) : null
+}
+
+export async function authenticateSession(
+  token: string,
+  userExists: UserExists,
+): Promise<AuthTokenPayload | null> {
+  const payload = await verifyAuthTokenFromEnv(token)
+  if (!payload || !(await userExists(payload.userId))) return null
+  return payload
 }

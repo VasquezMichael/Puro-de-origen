@@ -31,6 +31,7 @@ async function run() {
       ...process.env,
       JWT_SECRET: jwtSecret,
       MONGODB_URI: "mongodb://127.0.0.1:1/security-test",
+      URL: baseUrl,
       NODE_ENV: "development",
     },
     stdio: ["ignore", "pipe", "pipe"],
@@ -138,9 +139,13 @@ async function run() {
 
     response = await fetch(`${baseUrl}/api/auth/logout`, {
       method: "POST",
-      headers: { Origin: baseUrl },
+      headers: {
+        Origin: baseUrl,
+        "X-Forwarded-Host": "attacker.invalid",
+        "X-Forwarded-Proto": "https",
+      },
     })
-    assert.equal(response.status, 200, "logout succeeds from the same origin")
+    assert.equal(response.status, 200, "trusted Netlify origin is not replaced by forwarded headers")
     const logoutCookie = response.headers.get("set-cookie") || ""
     assert.match(logoutCookie, /auth-token=;/)
     assert.match(logoutCookie, /Max-Age=0/i)
@@ -148,9 +153,19 @@ async function run() {
     assert.match(logoutCookie, /HttpOnly/i)
     assert.match(logoutCookie, /SameSite=strict/i)
 
+    response = await fetch(`${baseUrl}/api/suppliers`, {
+      headers: { Cookie: "auth-token=" },
+    })
+    assert.equal(response.status, 401, "cleared logout cookie is rejected")
+
     response = await fetch(`${baseUrl}/api/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Origin: "https://attacker.invalid" },
+      headers: {
+        "Content-Type": "application/json",
+        Origin: "https://attacker.invalid",
+        "X-Forwarded-Host": "attacker.invalid",
+        "X-Forwarded-Proto": "https",
+      },
       body: JSON.stringify({ username: "test", password: "test" }),
     })
     assert.equal(response.status, 403, "cross-origin login request is rejected before database access")

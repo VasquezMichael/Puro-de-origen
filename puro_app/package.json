@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:security-auth": "node scripts/test-security-auth.js",
+    "test:security-auth": "node scripts/test-security-auth.js && node --experimental-strip-types --loader ./scripts/ts-alias-loader.mjs scripts/test-security-auth-mocked.mjs",
     "import:suppliers": "node scripts/import-suppliers.js",
     "import:payments": "node scripts/import-payments.js",
     "check:payments": "node scripts/check-payments-import.js",

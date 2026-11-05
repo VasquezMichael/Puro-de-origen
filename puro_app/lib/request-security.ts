@@ -1,7 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { verifyAuthTokenFromEnv } from "@/lib/jwt"
-
-type UserExists = (userId: string) => Promise<boolean>
+import { authenticateSession, type UserExists, verifyAuthTokenFromEnv } from "@/lib/jwt"
 
 export type AuthenticationResult =
   | { authenticated: true; userId: string }
@@ -35,15 +33,11 @@ export async function authenticateRequest(
   const token = request.cookies.get("auth-token")?.value
   if (!token) return { authenticated: false, response: unauthorizedResponse() }
 
-  const payload = await verifyAuthTokenFromEnv(token)
+  const userExists = options.userExists || defaultUserExists
+  const payload = options.checkUser === false
+    ? await verifyAuthTokenFromEnv(token)
+    : await authenticateSession(token, userExists)
   if (!payload) return { authenticated: false, response: unauthorizedResponse() }
-
-  if (options.checkUser !== false) {
-    const userExists = options.userExists || defaultUserExists
-    if (!(await userExists(payload.userId))) {
-      return { authenticated: false, response: unauthorizedResponse() }
-    }
-  }
 
   return { authenticated: true, userId: payload.userId }
 }
@@ -52,14 +46,26 @@ export function enforceSameOrigin(request: NextRequest): NextResponse | null {
   if (["GET", "HEAD", "OPTIONS"].includes(request.method)) return null
 
   const origin = request.headers.get("origin")
-  const forwardedHost = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim()
-  const requestHost = forwardedHost || request.headers.get("host")
-  const forwardedProtocol = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim()
-  const requestProtocol = forwardedProtocol || request.nextUrl.protocol.replace(":", "")
+  const configuredOrigins = [process.env.APP_ORIGIN, process.env.URL, process.env.DEPLOY_PRIME_URL]
+    .filter((value): value is string => Boolean(value))
+    .flatMap((value) => {
+      try {
+        const parsed = new URL(value)
+        return parsed.protocol === "http:" || parsed.protocol === "https:" ? [parsed.origin] : []
+      } catch {
+        return []
+      }
+    })
+
+  if (configuredOrigins.length === 0 && process.env.NODE_ENV !== "production") {
+    const host = request.headers.get("host")
+    if (host) configuredOrigins.push(`${request.nextUrl.protocol}//${host}`)
+    configuredOrigins.push(request.nextUrl.origin)
+  }
 
   try {
     const originUrl = origin ? new URL(origin) : null
-    if (!originUrl || originUrl.host !== requestHost || originUrl.protocol !== `${requestProtocol}:`) {
+    if (!originUrl || !configuredOrigins.includes(originUrl.origin)) {
       return forbiddenResponse("Invalid request origin")
     }
   } catch {
